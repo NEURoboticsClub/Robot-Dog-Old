@@ -1,0 +1,364 @@
+<?xml version="1.0" ?>
+<robot name="proof_of_concept_3_dof_legs" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find proof_of_concept_3_dof_legs_description)/urdf/materials.xacro" />
+<xacro:include filename="$(find proof_of_concept_3_dof_legs_description)/urdf/proof_of_concept_3_dof_legs.trans" />
+<xacro:include filename="$(find proof_of_concept_3_dof_legs_description)/urdf/proof_of_concept_3_dof_legs.gazebo" />
+<link name="base_link">
+  <inertial>
+    <origin rpy="0 0 0" xyz="-0.00017512784283862714 -0.0022640105890242702 -0.004685230826412168"/>
+    <mass value="113.28649675038626"/>
+    <inertia ixx="0.655688" ixy="-1e-06" ixz="4.6e-05" iyy="2.474125" iyz="2.7e-05" izz="2.854946"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="lf_connector_1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="-0.05890692770524361 -0.04146661261388823 -3.508104041045901e-07"/>
+    <mass value="5.973532362509098"/>
+    <inertia ixx="0.011226" ixy="-0.006051" ixz="0.0" iyy="0.01025" iyz="0.0" izz="0.015428"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="0.241468 0.069352 0.004431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/lf_connector_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="0.241468 0.069352 0.004431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/lf_connector_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="rf_connector_1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="-0.05890692770524361 0.04146627542331387 -3.5081040409591646e-07"/>
+    <mass value="5.973532362509098"/>
+    <inertia ixx="0.011226" ixy="0.006051" ixz="0.0" iyy="0.01025" iyz="-0.0" izz="0.015428"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="0.241468 -0.064739 0.004431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/rf_connector_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="0.241468 -0.064739 0.004431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/rf_connector_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="rh_connector_1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="0.061564112863926934 0.037293263920169156 -3.5081040508904565e-07"/>
+    <mass value="5.973532362509098"/>
+    <inertia ixx="0.01025" ixy="-0.006051" ixz="0.0" iyy="0.011226" iyz="0.0" izz="0.015428"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="-0.241132 -0.064739 0.004431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/rh_connector_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="-0.241132 -0.064739 0.004431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/rh_connector_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="lh_connector_1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="0.06156411286392699 -0.03729360111074348 -3.5081040509858663e-07"/>
+    <mass value="5.973532362509098"/>
+    <inertia ixx="0.01025" ixy="0.006051" ixz="0.0" iyy="0.011226" iyz="-0.0" izz="0.015428"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="-0.241132 0.069352 0.004431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/lh_connector_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="-0.241132 0.069352 0.004431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/lh_connector_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="lf_upper_1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="0.001612157727558794 -0.002851019911941838 -0.14873802492206387"/>
+    <mass value="4.692716099399879"/>
+    <inertia ixx="0.049843" ixy="-5e-06" ixz="0.000212" iyy="0.05174" iyz="0.000359" izz="0.002346"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="0.337668 0.172383 0.004431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/lf_upper_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="0.337668 0.172383 0.004431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/lf_upper_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="rf_upper_1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="-0.0016125225409798771 0.0028506827213675145 -0.14873802492206414"/>
+    <mass value="4.692716099399879"/>
+    <inertia ixx="0.049843" ixy="-5e-06" ixz="-0.000212" iyy="0.05174" iyz="-0.000359" izz="0.002346"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="0.337668 -0.16777 0.004431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/rf_upper_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="0.337668 -0.16777 0.004431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/rf_upper_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="rh_upper_1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="-0.001611961065731582 0.0028511212461185542 -0.14873802492206517"/>
+    <mass value="4.692716099399879"/>
+    <inertia ixx="0.049843" ixy="-5e-06" ixz="-0.000212" iyy="0.05174" iyz="-0.000359" izz="0.002346"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="-0.344162 -0.160939 0.004431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/rh_upper_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="-0.344162 -0.160939 0.004431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/rh_upper_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="lh_upper_1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="0.0016127192028073112 -0.002851458436693405 -0.1487380249220648"/>
+    <mass value="4.692716099399879"/>
+    <inertia ixx="0.049843" ixy="-5e-06" ixz="0.000212" iyy="0.05174" iyz="0.000359" izz="0.002346"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="-0.344162 0.165552 0.004431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/lh_upper_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="-0.344162 0.165552 0.004431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/lh_upper_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="lf_lower_1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="-2.6893604017086403e-06 0.018739518858223253 -0.09273022678906145"/>
+    <mass value="1.8340904220274463"/>
+    <inertia ixx="0.016816" ixy="-0.0" ixz="0.0" iyy="0.01703" iyz="0.000214" izz="0.000385"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="0.335768 0.172383 0.309431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/lf_lower_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="0.335768 0.172383 0.309431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/lf_lower_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="rf_lower_1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="2.3245469799038077e-06 -0.018739856048797354 -0.09273022678906145"/>
+    <mass value="1.8340904220274463"/>
+    <inertia ixx="0.016816" ixy="-0.0" ixz="-0.0" iyy="0.01703" iyz="-0.000214" izz="0.000385"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="0.339568 -0.16777 0.309431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/rf_lower_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="0.339568 -0.16777 0.309431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/rf_lower_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="rh_lower_1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="2.886022228365537e-06 -0.01873941752404598 -0.0927302267890624"/>
+    <mass value="1.8340904220274463"/>
+    <inertia ixx="0.016816" ixy="-0.0" ixz="-0.0" iyy="0.01703" iyz="-0.000214" izz="0.000385"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="-0.342262 -0.160939 0.309431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/rh_lower_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="-0.342262 -0.160939 0.309431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/rh_lower_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="lh_lower_1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="-2.1278851531914e-06 0.018739080333471603 -0.09273022678906229"/>
+    <mass value="1.8340904220274463"/>
+    <inertia ixx="0.016816" ixy="-0.0" ixz="0.0" iyy="0.01703" iyz="0.000214" izz="0.000385"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="-0.346062 0.165552 0.309431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/lh_lower_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="-0.346062 0.165552 0.309431"/>
+    <geometry>
+      <mesh filename="package://proof_of_concept_3_dof_legs_description/meshes/lh_lower_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="lf1" type="continuous">
+  <origin rpy="0 0 0" xyz="-0.241468 -0.069352 -0.004431"/>
+  <parent link="base_link"/>
+  <child link="lf_connector_1"/>
+  <axis xyz="-1.0 0.0 0.0"/>
+</joint>
+
+<joint name="rf1" type="continuous">
+  <origin rpy="0 0 0" xyz="-0.241468 0.064739 -0.004431"/>
+  <parent link="base_link"/>
+  <child link="rf_connector_1"/>
+  <axis xyz="-1.0 0.0 0.0"/>
+</joint>
+
+<joint name="rh1" type="continuous">
+  <origin rpy="0 0 0" xyz="0.241132 0.064739 -0.004431"/>
+  <parent link="base_link"/>
+  <child link="rh_connector_1"/>
+  <axis xyz="1.0 0.0 -0.0"/>
+</joint>
+
+<joint name="lh1" type="continuous">
+  <origin rpy="0 0 0" xyz="0.241132 -0.069352 -0.004431"/>
+  <parent link="base_link"/>
+  <child link="lh_connector_1"/>
+  <axis xyz="1.0 0.0 -0.0"/>
+</joint>
+
+<joint name="lf2" type="continuous">
+  <origin rpy="0 0 0" xyz="-0.0962 -0.103031 0.0"/>
+  <parent link="lf_connector_1"/>
+  <child link="lf_upper_1"/>
+  <axis xyz="-0.0 -1.0 -0.0"/>
+</joint>
+
+<joint name="rf2" type="continuous">
+  <origin rpy="0 0 0" xyz="-0.0962 0.103031 0.0"/>
+  <parent link="rf_connector_1"/>
+  <child link="rf_upper_1"/>
+  <axis xyz="-0.0 1.0 -0.0"/>
+</joint>
+
+<joint name="rh2" type="continuous">
+  <origin rpy="0 0 0" xyz="0.10303 0.0962 0.0"/>
+  <parent link="rh_connector_1"/>
+  <child link="rh_upper_1"/>
+  <axis xyz="-0.0 1.0 0.0"/>
+</joint>
+
+<joint name="lh2" type="continuous">
+  <origin rpy="0 0 0" xyz="0.10303 -0.0962 0.0"/>
+  <parent link="lh_connector_1"/>
+  <child link="lh_upper_1"/>
+  <axis xyz="-0.0 -1.0 0.0"/>
+</joint>
+
+<joint name="lf3" type="continuous">
+  <origin rpy="0 0 0" xyz="0.0019 0.0 -0.305"/>
+  <parent link="lf_upper_1"/>
+  <child link="lf_lower_1"/>
+  <axis xyz="-0.0 1.0 0.0"/>
+</joint>
+
+<joint name="rf3" type="continuous">
+  <origin rpy="0 0 0" xyz="-0.0019 0.0 -0.305"/>
+  <parent link="rf_upper_1"/>
+  <child link="rf_lower_1"/>
+  <axis xyz="0.0 -1.0 0.0"/>
+</joint>
+
+<joint name="rh3" type="continuous">
+  <origin rpy="0 0 0" xyz="-0.0019 0.0 -0.305"/>
+  <parent link="rh_upper_1"/>
+  <child link="rh_lower_1"/>
+  <axis xyz="0.0 -1.0 -0.0"/>
+</joint>
+
+<joint name="lh3" type="continuous">
+  <origin rpy="0 0 0" xyz="0.0019 0.0 -0.305"/>
+  <parent link="lh_upper_1"/>
+  <child link="lh_lower_1"/>
+  <axis xyz="-0.0 1.0 -0.0"/>
+</joint>
+
+</robot>
