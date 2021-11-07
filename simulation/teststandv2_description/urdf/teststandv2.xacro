@@ -1,0 +1,149 @@
+<?xml version="1.0" ?>
+<robot name="teststandv2" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find teststandv2_description)/urdf/materials.xacro" />
+<xacro:include filename="$(find teststandv2_description)/urdf/teststandv2.trans" />
+<xacro:include filename="$(find teststandv2_description)/urdf/teststandv2.gazebo" />
+<link name="base_link">
+  <inertial>
+    <origin rpy="0 0 0" xyz="0.0 0.0 0.45"/>
+    <mass value="70.65"/>
+    <inertia ixx="4.82775" ixy="-0.0" ixz="-0.0" iyy="4.82775" iyz="0.0" izz="0.11775"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <mesh filename="package://teststandv2_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <mesh filename="package://teststandv2_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="slider_1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="0.05 1.4945082208820774e-17 0.2"/>
+    <mass value="11.775"/>
+    <inertia ixx="0.031891" ixy="-0.0" ixz="0.0" iyy="0.031891" iyz="-0.0" izz="0.019625"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="-0.05 -0.0 -0.45"/>
+    <geometry>
+      <mesh filename="package://teststandv2_description/meshes/slider_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="-0.05 -0.0 -0.45"/>
+    <geometry>
+      <mesh filename="package://teststandv2_description/meshes/slider_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="hip_1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="0.06156429527063745 0.03729325470146667 0.0"/>
+    <mass value="5.973532362509098"/>
+    <inertia ixx="0.01025" ixy="-0.006051" ixz="0.0" iyy="0.011226" iyz="0.0" izz="0.015428"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="-0.15 -0.0 -0.65"/>
+    <geometry>
+      <mesh filename="package://teststandv2_description/meshes/hip_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="-0.15 -0.0 -0.65"/>
+    <geometry>
+      <mesh filename="package://teststandv2_description/meshes/hip_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="upper_leg_1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="-0.0016127786590206528 0.0028511120274162943 -0.14873767411165983"/>
+    <mass value="4.692716099399879"/>
+    <inertia ixx="0.049843" ixy="-5e-06" ixz="-0.000212" iyy="0.05174" iyz="-0.000359" izz="0.002346"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="-0.253031 -0.0962 -0.65"/>
+    <geometry>
+      <mesh filename="package://teststandv2_description/meshes/upper_leg_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="-0.253031 -0.0962 -0.65"/>
+    <geometry>
+      <mesh filename="package://teststandv2_description/meshes/upper_leg_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="lower_leg">
+  <inertial>
+    <origin rpy="0 0 0" xyz="2.068428938017952e-06 -0.018739426742748533 -0.09272987597865728"/>
+    <mass value="1.8340904220274463"/>
+    <inertia ixx="0.016816" ixy="-0.0" ixz="-0.0" iyy="0.01703" iyz="-0.000214" izz="0.000385"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="-0.251131 -0.0962 -0.345"/>
+    <geometry>
+      <mesh filename="package://teststandv2_description/meshes/lower_leg.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="-0.251131 -0.0962 -0.345"/>
+    <geometry>
+      <mesh filename="package://teststandv2_description/meshes/lower_leg.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="world"/>
+
+<joint name="basetoground" type="fixed">
+  <origin rpy="0 0 0" xyz="0 0.0 0"/>
+  <parent link="world"/>
+  <child link="base_link"/>
+</joint>
+
+<joint name="slider" type="prismatic">
+  <origin rpy="0 0 0" xyz="0.05 0.0 0.45"/>
+  <parent link="base_link"/>
+  <child link="slider_1"/>
+  <axis xyz="0.0 -1.0 0.0"/>
+  <limit effort="100" lower="0.0" upper="0.0" velocity="100"/>
+</joint>
+
+<joint name="l1" type="continuous">
+  <origin rpy="0 0 0" xyz="0.1 0.0 0.2"/>
+  <parent link="slider_1"/>
+  <child link="hip_1"/>
+  <axis xyz="1.0 0.0 0.0"/>
+</joint>
+
+<joint name="l2" type="continuous">
+  <origin rpy="0 0 0" xyz="0.103031 0.0962 0.0"/>
+  <parent link="hip_1"/>
+  <child link="upper_leg_1"/>
+  <axis xyz="-0.0 1.0 0.0"/>
+</joint>
+
+<joint name="l3" type="continuous">
+  <origin rpy="0 0 0" xyz="-0.0019 0.0 -0.305"/>
+  <parent link="upper_leg_1"/>
+  <child link="lower_leg"/>
+  <axis xyz="0.0 -1.0 -0.0"/>
+</joint>
+
+</robot>

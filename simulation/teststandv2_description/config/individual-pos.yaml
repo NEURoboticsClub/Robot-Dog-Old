@@ -1,0 +1,23 @@
+teststandv2:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+  # Position Controllers --------------------------------------
+  slider_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: slider
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  l1_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: l1
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  l2_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: l2
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  l3_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: l3
+    pid: {p: 100.0, i: 0.01, d: 10.0}
