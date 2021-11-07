@@ -5,5 +5,5 @@ To spawn into gazebo sim:
 roslaunch teststandv2_description gazebo.launch
 
 To spawn joint controllers in gazebo:
-first run the gazebo launch file, then
+first run the gazebo launch file, unpause the sim, then
 roslaunch teststandv2_description controller.launch
