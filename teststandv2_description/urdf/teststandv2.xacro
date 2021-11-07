@@ -88,7 +88,7 @@
   </collision>
 </link>
 
-<link name="sliding_piece">
+<link name="lower_leg">
   <inertial>
     <origin rpy="0 0 0" xyz="2.068428938017952e-06 -0.018739426742748533 -0.09272987597865728"/>
     <mass value="1.8340904220274463"/>
@@ -97,14 +97,14 @@
   <visual>
     <origin rpy="0 0 0" xyz="-0.251131 -0.0962 -0.345"/>
     <geometry>
-      <mesh filename="package://teststandv2_description/meshes/sliding_piece.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://teststandv2_description/meshes/lower_leg.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
     <origin rpy="0 0 0" xyz="-0.251131 -0.0962 -0.345"/>
     <geometry>
-      <mesh filename="package://teststandv2_description/meshes/sliding_peice.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://teststandv2_description/meshes/lower_leg.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -142,7 +142,7 @@
 <joint name="l3" type="continuous">
   <origin rpy="0 0 0" xyz="-0.0019 0.0 -0.305"/>
   <parent link="upper_leg_1"/>
-  <child link="sliding_piece"/>
+  <child link="lower_leg"/>
   <axis xyz="0.0 -1.0 -0.0"/>
 </joint>
 
