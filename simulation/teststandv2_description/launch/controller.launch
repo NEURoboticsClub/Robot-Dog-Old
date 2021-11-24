@@ -1,6 +1,6 @@
 <launch>
 
-<rosparam file="$(find teststandv2_description)/config/individual-pos.yaml" command="load"/>
+<rosparam file="$(find teststandv2_description)/config/ros/individual-pos-controller.yaml" command="load"/>
 
 <node 
   ns="teststandv2"
