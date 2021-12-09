@@ -121,8 +121,8 @@
   <origin rpy="0 0 0" xyz="0.05 0.0 0.45"/>
   <parent link="base_link"/>
   <child link="slider_1"/>
-  <axis xyz="0.0 -1.0 0.0"/>
-  <limit effort="100" lower="0.0" upper="0.0" velocity="100"/>
+  <axis xyz="0.0 0 1"/>
+  <limit effort="100" lower="-1" upper="1" velocity="100"/>
 </joint>
 
 <joint name="l1" type="continuous">
