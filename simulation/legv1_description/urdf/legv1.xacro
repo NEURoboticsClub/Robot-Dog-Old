@@ -1,0 +1,129 @@
+<?xml version="1.0" ?>
+<robot name="legv1" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find legv1_description)/urdf/materials.xacro" />
+<xacro:include filename="$(find legv1_description)/urdf/legv1.trans" />
+<xacro:include filename="$(find legv1_description)/urdf/legv1.gazebo" />
+<link name="base_link">
+  <inertial>
+    <origin xyz="-0.028857221307361923 0.1343117814431556 0.0008989854121047182" rpy="0 0 0"/>
+    <mass value="11.855803320660563"/>
+    <inertia ixx="0.105237" iyy="0.031981" izz="0.118107" ixy="-0.017641" iyz="0.000162" ixz="5.7e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://legv1_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://legv1_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="p1_1">
+  <inertial>
+    <origin xyz="-0.0005213946878042525 0.1080808989382492 -0.0015090338883853047" rpy="0 0 0"/>
+    <mass value="6.728138654734345"/>
+    <inertia ixx="0.021295" iyy="0.006245" izz="0.018512" ixy="5e-06" iyz="1.9e-05" ixz="-3.6e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.016805 0.008773 -0.001005" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://legv1_description/meshes/p1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.016805 0.008773 -0.001005" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://legv1_description/meshes/p1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="p2_1">
+  <inertial>
+    <origin xyz="0.05592720601521054 -0.0003781206160873435 -0.0411183088483893" rpy="0 0 0"/>
+    <mass value="5.946076526680729"/>
+    <inertia ixx="0.052025" iyy="0.052833" izz="0.007159" ixy="-6.8e-05" iyz="0.000122" ixz="0.007698"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.040155 -0.101227 -0.001005" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://legv1_description/meshes/p2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.040155 -0.101227 -0.001005" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://legv1_description/meshes/p2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="p3_1">
+  <inertial>
+    <origin xyz="-0.012786027823721458 0.00036954584020434944 -0.17468535196255708" rpy="0 0 0"/>
+    <mass value="1.6403053813281432"/>
+    <inertia ixx="0.023887" iyy="0.02385" izz="0.000303" ixy="0.0" iyz="4.9e-05" ixz="-1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.142267 -0.100977 0.305595" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://legv1_description/meshes/p3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.142267 -0.100977 0.305595" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://legv1_description/meshes/p3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name = "world"/>
+<link name = "foot"/>
+
+<joint name="slider" type="prismatic">
+  <origin xyz="0 0 1" rpy="0 0 0"/>
+  <parent link="world"/>
+  <child link="base_link"/>
+  <axis xyz="0.0 0.0 1"/>
+  <limit effort="100" lower="-10" upper="10" velocity="100"/>
+</joint>
+
+<joint name="j1" type="continuous">
+  <origin xyz="0.016805 -0.008773 0.001005" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="p1_1"/>
+  <axis xyz="0.0 1.0 -0.0"/>
+</joint>
+
+<joint name="j2" type="continuous">
+  <origin xyz="0.02335 0.11 0.0" rpy="0 0 0"/>
+  <parent link="p1_1"/>
+  <child link="p2_1"/>
+  <axis xyz="1.0 -0.0 -0.0"/>
+</joint>
+
+<joint name="j3" type="continuous">
+  <origin xyz="0.102112 -0.00025 -0.3066" rpy="0 0 0"/>
+  <parent link="p2_1"/>
+  <child link="p3_1"/>
+  <axis xyz="-1.0 0.0 -0.0"/>
+</joint>
+
+<joint name="jfoot" type="fixed">
+  <origin xyz="-.015 0 -.325" rpy="0 0 0"/>
+  <parent link="p3_1"/>
+  <child link="foot"/>
+</joint>
+
+</robot>

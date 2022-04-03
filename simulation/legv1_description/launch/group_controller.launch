@@ -1,0 +1,14 @@
+<launch>
+
+    <rosparam file="$(find legv1_description)/config/group_controller.yaml" command="load" />
+
+    <node ns="legv1" name="controller_spawner" pkg="controller_manager" type="spawner" 
+    respawn="false" output="screen" args="joint_group_position_controller joint_states_controller"/>
+
+    <node name="robot_state_publisher" output="screen" pkg="robot_state_publisher" 
+    respawn="false" type="robot_state_publisher">
+
+    <remap from="/joint_states" to="/legv1/joint_states" />
+    </node>
+
+</launch>
