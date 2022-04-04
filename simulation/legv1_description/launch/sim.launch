@@ -1,0 +1,4 @@
+<launch> 
+    <include file="$(find legv1_description)/launch/gazebo.launch" />
+    <include file="$(find legv1_description)/launch/group_controller.launch" />
+</launch>
