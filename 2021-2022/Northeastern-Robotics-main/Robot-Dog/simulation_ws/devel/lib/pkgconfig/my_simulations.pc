@@ -1,0 +1,8 @@
+prefix=/home/owltesthq/Northeastern-Robotics/Robot-Dog/simulation_ws/devel
+
+Name: my_simulations
+Description: Description of my_simulations
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

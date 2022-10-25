@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<sdf version="1.5">
+  <model name="my1stmodel">
+    <static>false</static>
+    <link name="link">
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <uri>model://mymodel/meshes/3DBenchy.stl</uri>
+            <scale>1 1 1</scale>          </mesh>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>100</mu>
+              <mu2>50</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://mymodel/meshes/3DBenchy.stl</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <uri>file:///usr/share/gazebo-11/media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Purple</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

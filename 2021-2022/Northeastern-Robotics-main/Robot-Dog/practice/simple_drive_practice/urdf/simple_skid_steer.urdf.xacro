@@ -1,0 +1,207 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="simple_skid_steer">
+
+  <!--central box properties-->
+  <xacro:property name="depthBox" value=".5" />
+  <xacro:property name="widthBox" value=".3" />
+  <xacro:property name="heightBox" value=".1" />
+  <xacro:property name="densityBox" value="100" />
+  <!--post to elevate sensor properties-->
+  <xacro:property name="depthPost" value=".1" />
+  <xacro:property name="widthPost" value=".1" />
+  <xacro:property name="heightPost" value=".1" />
+  <xacro:property name="densityPost" value="100" />
+  <!--wheel properties-->
+  <xacro:property name="radiusCylinder" value=".1" />
+  <xacro:property name="lengthCylinder" value=".05" />
+  <xacro:property name="densityCylinder" value="100" />
+
+  <!--box body-->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="${depthBox} ${widthBox} ${heightBox}"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 ${heightBox}"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <box size="${depthBox} ${widthBox} ${heightBox}"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 ${heightBox}"/>
+    </collision>
+
+    <inertial>
+      <mass value="${depthBox*widthBox*heightBox*densityBox}"/>
+      <inertia
+        ixx="${(depthBox*widthBox*heightBox*densityBox)/12*((heightBox*heightBox)+(depthBox*depthBox))}"
+        ixy="0"
+        ixz="0"
+        iyy="${(depthBox*widthBox*heightBox*densityBox)/12*((widthBox*widthBox)+(depthBox*depthBox))}"
+        iyz="0"
+        izz="${(depthBox*widthBox*heightBox*densityBox)/12*((widthBox*widthBox)+(heightBox*heightBox))}"/>
+    </inertial>
+  </link>
+
+  <!--Post to elevate sensor-->
+    <link name="post">
+      <visual>
+        <geometry>
+          <box size="${depthPost} ${widthPost} ${heightPost}"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+      </visual>
+
+      <collision>
+        <geometry>
+          <box size="${depthPost} ${widthPost} ${heightPost}"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 ${heightPost}"/>
+      </collision>
+
+      <inertial>
+        <mass value="${depthPost*widthPost*heightPost*densityPost}"/>
+        <inertia
+          ixx="${(depthPost*widthPost*heightPost*densityPost)/12*((heightPost*heightPost)+(depthPost*depthPost))}"
+          ixy="0"
+          ixz="0"
+          iyy="${(depthPost*widthPost*heightPost*densityPost)/12*((widthPost*widthPost)+(depthPost*depthPost))}"
+          iyz="0"
+          izz="${(depthPost*widthPost*heightPost*densityPost)/12*((widthPost*widthPost)+(heightPost*heightPost))}"/>
+      </inertial>
+    </link>
+
+    <!-- Hokuyo Laser -->
+      <link name="hokuyo_link">
+        <collision>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+        <box size="0.01 0.01 0.01"/>
+          </geometry>
+        </collision>
+
+        <visual>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+            <mesh filename="package://simple_drive_practice/urdf/meshes/hokuyo.dae"/>
+          </geometry>
+        </visual>
+
+        <inertial>
+          <mass value="1e-5" />
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+        </inertial>
+      </link>
+
+<gazebo reference="hokuyo_link">
+    <sensor type="ray" name="head_hokuyo_sensor">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>40</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <resolution>1</resolution>
+            <min_angle>-1.570796</min_angle>
+            <max_angle>1.570796</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.10</min>
+          <max>30.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <!-- Noise parameters based on published spec for Hokuyo laser
+               achieving "+-30mm" accuracy at range < 10m.  A mean of 0.0m and
+               stddev of 0.01m will put 99.7% of samples within 0.03m of the true
+               reading. -->
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+        <topicName>/simple_skid_steer/laser/scan</topicName>
+        <frameName>base_link</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!--algorithm for creating wheels and joints-->
+  <xacro:macro name="wheel" params="prefix x y">
+      <link name="${prefix}Wheel">
+        <visual>
+          <geometry>
+          	<cylinder length="${lengthCylinder}" radius="${radiusCylinder}"/>
+          </geometry>
+          <origin rpy="1.5707 0 0" xyz="0 0 0"/>
+        </visual>
+
+        <collision>
+          <geometry>
+            <cylinder length="${lengthCylinder}" radius="${radiusCylinder}"/>
+          </geometry>
+          <origin rpy="1.5707 0 0" xyz="0 0 0"/>
+        </collision>
+
+     <inertial>
+          <mass value="${(radiusCylinder*radiusCylinder)*3.1415}"/>
+          <inertia
+            ixx="${(((radiusCylinder*radiusCylinder)*3.1415)/12)*(3*(radiusCylinder*radiusCylinder)+(lengthCylinder*lengthCylinder))}"
+            ixy="0"
+            ixz="0"
+            iyy="${(((radiusCylinder*radiusCylinder)*3.1415)/12)*(3*(radiusCylinder*radiusCylinder)+(lengthCylinder*lengthCylinder))}"
+            iyz="0"
+            izz="${(((radiusCylinder*radiusCylinder)*3.1415)/2)*(radiusCylinder*radiusCylinder)}"/>
+        </inertial>
+      </link>
+
+      <joint name="${prefix}WheelJoint" type="continuous">
+        <parent link="base_link"/>
+        <child link="${prefix}Wheel"/>
+        <axis xyz="0 ${((widthBox/2)+(lengthCylinder/2))} 0"/>
+        <origin xyz="${((depthBox/2)-radiusCylinder)*x} ${((widthBox/2)+(lengthCylinder/2))*y} ${heightBox}"/>
+      </joint>
+  </xacro:macro>
+  <!--Skid Steering Drive-->
+  <gazebo>
+    <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
+      <updateRate>100.0</updateRate>
+      <robotNamespace>/simple_skid_steer</robotNamespace>
+      <leftFrontJoint>leftFrontWheelJoint</leftFrontJoint>
+      <rightFrontJoint>rightFrontWheelJoint</rightFrontJoint>
+      <leftRearJoint>leftBackWheelJoint</leftRearJoint>
+      <rightRearJoint>rightBackWheelJoint</rightRearJoint>
+      <wheelSeparation>${(widthBox/2) + (lengthCylinder/2)}</wheelSeparation>
+      <wheelDiameter>${radiusCylinder*2}</wheelDiameter>
+      <robotBaseFrame>base_link</robotBaseFrame>
+      <torque>20</torque>
+      <topicName>cmd_vel</topicName>
+      <broadcastTF>true</broadcastTF>
+    </plugin>
+  </gazebo>
+  <!--Create wheels and joint to the main body using above algorithm-->
+  <xacro:wheel prefix="rightFront" x="1" y="1"/>
+  <xacro:wheel prefix="leftFront" x="1" y="-1"/>
+  <xacro:wheel prefix="rightBack" x="-1" y="1"/>
+  <xacro:wheel prefix="leftBack" x="-1" y="-1"/>
+
+  <joint name="postToBody" type="fixed">
+    <parent link="base_link"/>
+    <child link="post"/>
+    <origin xyz="0 0 ${(heightBox/2)+heightBox+(heightPost/2)}"/>
+  </joint>
+
+  <joint name="sensorToBody" type="fixed">
+     <axis xyz="0 1 0"  rpy="0 0 0"/>
+    <parent link="post"/>
+    <child link="hokuyo_link"/>
+    <origin xyz="0 0 .085"/>
+  </joint>
+
+</robot>
+

@@ -1,0 +1,8 @@
+prefix=/home/owltesthq/Northeastern-Robotics/Robot-Dog/simulation_ws/install
+
+Name: firstrobot_test
+Description: Description of firstrobot_test
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
