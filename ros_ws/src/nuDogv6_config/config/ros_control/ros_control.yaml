@@ -1,0 +1,34 @@
+"":
+  joint_states_controller:
+      type: joint_state_controller/JointStateController
+      publish_rate: 20
+
+  joint_group_position_controller:
+      type: effort_controllers/JointTrajectoryController
+      joints:
+          - FL_Ad
+          - FL_Hip
+          - FL_Knee
+          - FR_Ad
+          - FR_Hip
+          - FR_Knee
+          - BL_Ad
+          - BL_Hip
+          - BL_Knee
+          - BR_Ad
+          - BR_Hip
+          - BR_Knee
+
+      gains:
+        FL_Ad : {p: 180, d: 0.9, i: 20}
+        FL_Hip : {p: 180, d: 0.9, i: 20}
+        FL_Knee : {p: 180, d: 0.9, i: 20}
+        FR_Ad : {p: 180, d: 0.9, i: 20}
+        FR_Hip : {p: 180, d: 0.9, i: 20}
+        FR_Knee : {p: 180, d: 0.9, i: 20}
+        BL_Ad : {p: 180, d: 0.9, i: 20}
+        BL_Hip : {p: 180, d: 0.9, i: 20}
+        BL_Knee : {p: 180, d: 0.9, i: 20}
+        BR_Ad : {p: 180, d: 0.9, i: 20}
+        BR_Hip : {p: 180, d: 0.9, i: 20}
+        BR_Knee : {p: 180, d: 0.9, i: 20}
