@@ -21,6 +21,8 @@ def callback(data):
 
 
 if __name__ == "__main__":
+    print("Server Node is running...")
+
     # 1. init node
     rospy.init_node('server_node')
     rospy.Subscriber('test_topic', String, callback)
@@ -32,21 +34,19 @@ if __name__ == "__main__":
     SERVER_SOCKET.bind((HOST, PORT))
     SERVER_SOCKET.listen(5)
 
+    # 3. connect with new client
+    client_socket, addr = SERVER_SOCKET.accept()
+    print(f"Got a connection from {str(addr)}, curr_host={HOST}")
+
     while not rospy.is_shutdown():
-        print("Server Node is running...")
-
-        # 1. connect with new client
-        client_socket, addr = SERVER_SOCKET.accept()
-        print(f"Got a connection from {str(addr)}, curr_host={HOST}")
-
-        # 2. receive msg from client
+    
+        # 4. receive msg from client
         msg = client_socket.recv(1024)
         client_data = json.loads(msg.decode("utf-8"))
         print(f"Received client data: {client_data}")
 
-        # 3. Send data to client
-        ros_data = {"from Docker test_topic subscriber": "some_command", "parameter": 123}
-        client_socket.send(json.dumps({"data": data_buffer["test_topic"]}).encode("utf-8"))
+        # 5. Send data to client
+        client_socket.send(json.dumps({"data": data_buffer["test_topic"], "id": {client_data.id}}).encode("utf-8"))
 
     # Close the connection
     client_socket.close()

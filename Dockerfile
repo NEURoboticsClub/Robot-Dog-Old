@@ -1,4 +1,5 @@
 # Use the official ROS Noetic image as the base image
+# combined master, sub, publisher container
 FROM ros:noetic
 
 # Set a directory for the app
