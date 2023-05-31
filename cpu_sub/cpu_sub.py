@@ -13,7 +13,7 @@ data_buffer = {} # ROStopic: data
 def callback(data):
     global client_socket
     # 1. This function gets called every time a message is published on the 'test_topic' topic
-    rospy.loginfo("Received from a test_node: %s", data.data)
+    rospy.loginfo("From test_node: %s", data.data)
 
     # 2. save lastest data on this topic
     data_buffer["test_topic"] = data.data
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     print("Server Node is running...")
 
     # 1. init node
-    rospy.init_node('server_node')
+    rospy.init_node('cpusub_node')
     rospy.Subscriber('test_topic', String, callback)
 
     # 2. init server socket to listen to client request
