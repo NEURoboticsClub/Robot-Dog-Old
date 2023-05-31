@@ -1,13 +1,13 @@
 # ros-docker
 
-PREREQUSITES:  
+## PREREQUSITES:  
 Docker installed  
 
+## To run all containers: 
+docker compose up --build
 
-Build the server container:  
-run docker build -t rosserver .  
+## To run client: 
+python3 mc_test.py  
 
-Run the container:
-docker run --name server_container -p 9999:9999 rosserver  
-
-Run the client python3 client.py
+## To stop containers: 
+docker compose down
