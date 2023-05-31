@@ -13,7 +13,7 @@ data_buffer = {} # ROStopic: data
 def callback(data):
     global client_socket
     # 1. This function gets called every time a message is published on the 'test_topic' topic
-    rospy.loginfo("Received a message from a ROS test_node: %s", data.data)
+    rospy.loginfo("Received from a test_node: %s", data.data)
 
     # 2. save lastest data on this topic
     data_buffer["test_topic"] = data.data
@@ -34,19 +34,26 @@ if __name__ == "__main__":
     SERVER_SOCKET.bind((HOST, PORT))
     SERVER_SOCKET.listen(5)
 
-    # 3. connect with new client
-    client_socket, addr = SERVER_SOCKET.accept()
-    print(f"Got a connection from {str(addr)}, curr_host={HOST}")
-
-    while not rospy.is_shutdown():
     
-        # 4. receive msg from client
-        msg = client_socket.recv(1024)
-        client_data = json.loads(msg.decode("utf-8"))
-        print(f"Received client data: {client_data}")
+    while not rospy.is_shutdown():
+        # 3. connect with new client
+        client_socket, addr = SERVER_SOCKET.accept()
+        print(f"Got a connection from {str(addr)}, curr_host={HOST}")
 
-        # 5. Send data to client
-        client_socket.send(json.dumps({"data": data_buffer["test_topic"], "id": {client_data.id}}).encode("utf-8"))
+        # 4.inner loop for handling multiple requests from same client
+        while True:  
+            msg = client_socket.recv(1024)
+
+            # 5. if no message received, break the loop to accept a new connection
+            if not msg:
+                break  
+
+            # 6. print requested
+            client_data = json.loads(msg.decode("utf-8"))
+            print(f"Received client data: {client_data}")
+
+            # 7. send back to client
+            client_socket.send(json.dumps({"datax": data_buffer["test_topic"], "id": client_data['id']}).encode("utf-8"))
 
     # Close the connection
     client_socket.close()

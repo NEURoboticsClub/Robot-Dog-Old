@@ -1,5 +1,6 @@
 import socket
 import json
+import errno
 
 # CLIENT CODE
 # Get local machine name (client)
@@ -21,22 +22,34 @@ def main():
     for _ in range(5):
         print(f"sending request id=",id)
         # 1.Send data to server
-        data_to_send = {"request_topic": "velocity", "id": id}
+        data_to_send = {"request_topic": "test", "id": id}
         s.send(json.dumps(data_to_send).encode(FORMAT))
 
         # 2. Receive from server
         try:
             msg = s.recv(MSG_SIZE)
-            ros_data = json.loads(msg.decode(FORMAT))
+
+            if msg:
+                ros_data = json.loads(msg.decode(FORMAT))
             
-            # 3. log the received data
-            print(f"Received ROS data: {ros_data}, curr_host={SERVER_HOST}")
+                # 3. log the received data
+                print(f"Received ROS data: {ros_data}, curr_host={SERVER_HOST}")
+            else:
+                print("no response")
+
+    
         
         except socket.timeout as e:
             print(f"Timeout occurred while waiting for response: {e}")
         
+        except IOError as e:  
+            if e.errno == errno.EPIPE:  
+                print(f"broken pipe=",e)
+                
         except socket.error as e:
             print(f"An error occurred: {e}")
+        
+       # Handling of the error
         
         id +=1
 
