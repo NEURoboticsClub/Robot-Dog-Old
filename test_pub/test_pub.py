@@ -6,7 +6,7 @@ from datetime import datetime
 if __name__ == "__main__":
     rospy.init_node('test_node')
     pub = rospy.Publisher('test_topic', String, queue_size=10)
-    rate = rospy.Rate(1) # 1 Hz
+    rate = rospy.Rate(50) # check messages 10 times per second
 
     while not rospy.is_shutdown():
         # rospy.loginfo("Publishing a message...")
