@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 import rospy
 import socket
 import json
@@ -38,7 +38,8 @@ if __name__ == "__main__":
     while not rospy.is_shutdown():
         # 3. connect with new client
         client_socket, addr = SERVER_SOCKET.accept()
-        print(f"Got a connection from {str(addr)}, curr_host={HOST}")
+        print("Got a connection from {}, curr_host={}".format(str(addr), HOST))
+
 
         # 4.inner loop for handling multiple requests from same client
         while True:  
@@ -50,7 +51,7 @@ if __name__ == "__main__":
 
             # 6. print requested
             client_data = json.loads(msg.decode("utf-8"))
-            print(f"Received client data: {client_data}")
+            print("Received client data: {}".format(client_data))
 
             # 7. send back to client
             client_socket.send(json.dumps({"datax": data_buffer["test_topic"], "id": client_data['id']}).encode("utf-8"))

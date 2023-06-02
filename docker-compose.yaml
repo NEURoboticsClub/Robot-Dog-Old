@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   ros-master:
-    image: ros:noetic-ros-core
+    image: ros:melodic-ros-core
     command: roscore
     # forgo the network isolation between container and host
     # will make network.gethostname() use the address of raspberry pi not container
@@ -13,7 +13,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - "ROS_MASTER_URI=http://localhost:11311"
-    command: bash -c "source /opt/ros/noetic/setup.bash && python3 test_pub.py"
+    command: bash -c "source /opt/ros/melodic/setup.bash && python test_pub.py"
     depends_on:
       - ros-master
     network_mode: host 
@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - "ROS_MASTER_URI=http://localhost:11311"
-    command: bash -c "source /opt/ros/noetic/setup.bash && python3 cpu_sub.py"
+    command: bash -c "source /opt/ros/melodic/setup.bash && python cpu_sub.py"
     depends_on:
       - ros-master
     network_mode: host

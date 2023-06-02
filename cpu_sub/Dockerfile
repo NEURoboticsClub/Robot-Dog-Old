@@ -1,12 +1,15 @@
-# Dockerfile_server
-FROM ros:noetic
+
+# Dockerfile_test_node
+FROM ros:melodic
 
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
-    python3-pip \
-    && rm -rf /var/lib/apt/lists/*
+    python-pip \
+    && pip2 install pyyaml
 
 COPY cpu_sub.py ./cpu_sub.py
 
-CMD ["bash", "-c", "source /opt/ros/noetic/setup.bash && python3 cpu_sub.py"]
+# prepares your shell session to use the ROS commands and tools
+# run the publisher node
+CMD ["bash", "-c", "source /opt/ros/melodic/setup.bash && python cpu_sub.py"]
