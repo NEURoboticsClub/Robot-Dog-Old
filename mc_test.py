@@ -5,7 +5,6 @@ import errno
 # Get local machine name
 SERVER_HOST = socket.gethostname()
 SERVER_PORT = 9999
-FORMAT = "utf-8"
 MSG_SIZE = 1024
 
 def get_cpu_info(s):
@@ -46,7 +45,6 @@ def get_cpu_info(s):
         except IOError as e:  
             if e.errno == errno.EPIPE:  
                 print("broken pipe: {}".format(e))
-
 
 
 def main():

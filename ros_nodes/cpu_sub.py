@@ -8,15 +8,16 @@ from std_msgs.msg import String
 # global variable
 client_socket = None
 data_buffer = {} # ROStopic: data
+TOPIC = "cpu_topic"
 
 # Callback function when publisher publishe something on this topic
 def callback(data):
     global client_socket
     # 1. This function gets called every time a message is published on the 'test_topic' topic
-    rospy.loginfo("From test_node: %s", data.data)
+    rospy.loginfo("From cpu_node: %s", data.data)
 
     # 2. save lastest data on this topic
-    data_buffer["test_topic"] = data.data
+    data_buffer[TOPIC] = data.data
 
 
 
@@ -25,7 +26,7 @@ if __name__ == "__main__":
 
     # 1. init node
     rospy.init_node('cpusub_node')
-    rospy.Subscriber('test_topic', String, callback)
+    rospy.Subscriber(TOPIC, String, callback)
 
     # 2. init server socket to listen to client request
     SERVER_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -36,17 +37,16 @@ if __name__ == "__main__":
 
     
     while not rospy.is_shutdown():
-        # 3. connect with new client
+        # 3. connect with new client (MC)
         client_socket, addr = SERVER_SOCKET.accept()
         print("Got a connection from {}, curr_host={}".format(str(addr), HOST))
 
-
-        # 4.keep sending updated message to client
+        # 4.keep sending messages from CPU to MC
         while True:  
             # convert dict to json string
-            json_data = json.dumps({"datax": data_buffer["test_topic"]}) +"\n"
-            print("sendin-->", json_data)
+            json_data = json.dumps({"data": data_buffer[TOPIC]}) +"\n"
+            print("sending-->", json_data)
             client_socket.send(json_data)
+            
     # Close the connection
-
     client_socket.close()

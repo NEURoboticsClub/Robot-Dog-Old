@@ -9,18 +9,18 @@ services:
     network_mode: host 
   test-pub:
     build:
-      context: ./test_pub
+      context: ./cpu
       dockerfile: Dockerfile
     environment:
       - "ROS_MASTER_URI=http://localhost:11311"
-    command: bash -c "source /opt/ros/melodic/setup.bash && python test_pub.py"
+    command: bash -c "source /opt/ros/melodic/setup.bash && python cpu.py"
     depends_on:
       - ros-master
     network_mode: host 
 
   server:
     build:
-      context: ./cpu_sub
+      context: ./ros_nodes
       dockerfile: Dockerfile
     environment:
       - "ROS_MASTER_URI=http://localhost:11311"
