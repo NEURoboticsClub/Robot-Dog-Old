@@ -10,6 +10,6 @@ RUN apt-get update && apt-get install -y \
 
 COPY mc_sub.py ./mc_sub.py
 COPY cpu_sub.py ./cpu_sub.py
-COPY run.sh /run.sh
+COPY run.sh ./run.sh
 
-# RUN chmod a+x /run.sh
+RUN chmod a+x ./run.sh

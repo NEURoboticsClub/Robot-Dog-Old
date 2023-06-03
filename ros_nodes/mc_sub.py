@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
             if not msg: 
                 break
-            print("received from MC:", msg)
+            print("Received from MC:", msg)
         
             
     # Close the connection

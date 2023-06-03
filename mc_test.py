@@ -36,7 +36,7 @@ def get_cpu_info(sock):
                         # ready for next json
                         single_json = []
 
-                        print("res={}, id={}".format(res, id))
+                        print("Received from cpu_sub={}, id={}".format(res, id))
                         id+=1
             else:
                 print("no response")
@@ -57,14 +57,14 @@ def send_mc_info(sock):
         sock.send(json.dumps(data))
 
         # 2 log
-        print("Sent: {}, id={}".format(data,id))
+        # print("Sent: {}, id={}".format(data,id))
         id+=1
 
 def main():
     # 1. init socket and time out to listen to cpu_sub node
-    # cpu_sub_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # cpu_sub_socket.settimeout(10.0)
-    # cpu_sub_socket.connect((SERVER_HOST, CPU_SUB_SERVER_PORT))
+    cpu_sub_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    cpu_sub_socket.settimeout(10.0)
+    cpu_sub_socket.connect((SERVER_HOST, CPU_SUB_SERVER_PORT))
 
     # 2. inis socket and timeout to send msg to mc_sub node
     mc_sub_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -72,11 +72,11 @@ def main():
     mc_sub_socket.connect((SERVER_HOST, MC_SUB_SERVER_PORT))
 
     # 3. init thread
-    # get_cpu_info_thread = threading.Thread(target=get_cpu_info, args=(cpu_sub_socket,))
+    get_cpu_info_thread = threading.Thread(target=get_cpu_info, args=(cpu_sub_socket,))
     send_mc_info_thread = threading.Thread(target=send_mc_info, args=(mc_sub_socket,))
 
     # 4. run
-    # get_cpu_info_thread.start()
+    get_cpu_info_thread.start()
     send_mc_info_thread.start()
 
     while True:

@@ -22,7 +22,7 @@ def callback(data):
 
 
 if __name__ == "__main__":
-    print("Server Node is running...")
+    print("CPU_SUB Node is running...")
 
     # 1. init node
     rospy.init_node('cpusub_node')
@@ -41,12 +41,11 @@ if __name__ == "__main__":
         client_socket, addr = SERVER_SOCKET.accept()
         print("Got a connection from {}, curr_host={}".format(str(addr), HOST))
 
-        # 4.keep sending messages from CPU to MC
+        # 4.keep sending messages received from CPU to MC
         while True:  
             # convert dict to json string
             json_data = json.dumps({"data": data_buffer[TOPIC]}) +"\n"
-            print("sending-->", json_data)
+            # print("sending-->", json_data)
             client_socket.send(json_data)
             
-    # Close the connection
     client_socket.close()
