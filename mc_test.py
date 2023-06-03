@@ -5,10 +5,11 @@ import threading
 
 # Get local machine name
 SERVER_HOST = socket.gethostname()
-SERVER_PORT = 9999
 MSG_SIZE = 1024
+CPU_SUB_SERVER_PORT = 9999
+MC_SUB_SERVER_PORT = 9998
 
-def get_cpu_info(cpu_sub):
+def get_cpu_info(sock):
     # init random id
     id = 1
     single_json = []
@@ -16,7 +17,7 @@ def get_cpu_info(cpu_sub):
 
         try:
             # 1. get message and process
-            raw_msg = cpu_sub.recv(MSG_SIZE)
+            raw_msg = sock.recv(MSG_SIZE)
             if raw_msg:
 
                 # 2. split msg by newline
@@ -48,17 +49,35 @@ def get_cpu_info(cpu_sub):
                 print("broken pipe: {}".format(e))
       
 
+def send_mc_info(sock):
+    id = 1
+    while True:
+        # 1. init and send data
+        data = {"data": "mc_test", "id":id}
+        sock.send(json.dumps(data))
+
+        # 2 log
+        print("Sent: {}, id={}".format(data,id))
+        id+=1
+
 def main():
-    
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # 1. init socket and time out to listen to cpu_sub node
+    # cpu_sub_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # cpu_sub_socket.settimeout(10.0)
+    # cpu_sub_socket.connect((SERVER_HOST, CPU_SUB_SERVER_PORT))
 
-    # Set a timeout for socket operations
-    s.settimeout(10.0)
-    # Connection to server on local machine
-    s.connect((SERVER_HOST, SERVER_PORT))
+    # 2. inis socket and timeout to send msg to mc_sub node
+    mc_sub_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    mc_sub_socket.settimeout(10.0)
+    mc_sub_socket.connect((SERVER_HOST, MC_SUB_SERVER_PORT))
 
-    get_cpu_info_thread = threading.Thread(target=get_cpu_info, args=(s,))
-    get_cpu_info_thread.start()
+    # 3. init thread
+    # get_cpu_info_thread = threading.Thread(target=get_cpu_info, args=(cpu_sub_socket,))
+    send_mc_info_thread = threading.Thread(target=send_mc_info, args=(mc_sub_socket,))
+
+    # 4. run
+    # get_cpu_info_thread.start()
+    send_mc_info_thread.start()
 
     while True:
         pass

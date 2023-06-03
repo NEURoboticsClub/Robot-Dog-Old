@@ -14,7 +14,7 @@ TOPIC = "cpu_topic"
 def callback(data):
     global client_socket
     # 1. This function gets called every time a message is published on the 'test_topic' topic
-    rospy.loginfo("From cpu_node: %s", data.data)
+    # rospy.loginfo("CPU_SUB: %s", data.data)
 
     # 2. save lastest data on this topic
     data_buffer[TOPIC] = data.data

@@ -12,5 +12,5 @@ if __name__ == "__main__":
     while not rospy.is_shutdown():
         current_time = datetime.now()
         formatted_time = current_time.strftime("%H:%M:%S")
-        pub.publish("hello there!" + formatted_time)
+        pub.publish("hello from cpu node!" + formatted_time)
         rate.sleep()

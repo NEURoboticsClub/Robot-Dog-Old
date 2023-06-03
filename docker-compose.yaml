@@ -7,7 +7,7 @@ services:
     # forgo the network isolation between container and host
     # will make network.gethostname() use the address of raspberry pi not container
     network_mode: host 
-  test-pub:
+  cpu-node:
     build:
       context: ./cpu
       dockerfile: Dockerfile
@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - "ROS_MASTER_URI=http://localhost:11311"
-    command: bash -c "source /opt/ros/melodic/setup.bash && python cpu_sub.py"
+    command: bash -c "source /opt/ros/melodic/setup.bash && python mc_sub.py"
     depends_on:
       - ros-master
     network_mode: host

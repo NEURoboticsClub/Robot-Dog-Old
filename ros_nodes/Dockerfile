@@ -8,8 +8,8 @@ RUN apt-get update && apt-get install -y \
     python-pip \
     && pip2 install pyyaml
 
+COPY mc_sub.py ./mc_sub.py
 COPY cpu_sub.py ./cpu_sub.py
+COPY run.sh /run.sh
 
-# prepares your shell session to use the ROS commands and tools
-# run the publisher node
-CMD ["bash", "-c", "source /opt/ros/melodic/setup.bash && python cpu_sub.py"]
+# RUN chmod a+x /run.sh

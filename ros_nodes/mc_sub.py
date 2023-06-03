@@ -1,8 +1,6 @@
 #!/usr/bin/env python2
 import rospy
 import socket
-import json
-from std_msgs.msg import String
 
 
 # global variable
@@ -10,22 +8,31 @@ client_socket = None
 data_buffer = {} # ROStopic: data
 
 if __name__ == "__main__":
-    print("Server Node is running...")
+    print("MC_SUB node is running...")
 
     # 1. init node
-    rospy.init_node('cpusub_node')
+    rospy.init_node('mcsub_node')
 
     # 2. init server socket to listen to client req
-    SERVER_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     HOST = socket.gethostname()
-    PORT = 9999
-    SERVER_SOCKET.bind((HOST, PORT))
-    SERVER_SOCKET.listen(5)
+    MSG_SIZE = 1024
+    MC_SUB_PORT = 9998
 
+    MC_SUB_SERVER_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    MC_SUB_SERVER_SOCKET.bind((HOST, MC_SUB_PORT))
+    MC_SUB_SERVER_SOCKET.listen(5)
     
     while not rospy.is_shutdown():
         # 3. connect with new client (MC)
-        client_socket, addr = SERVER_SOCKET.accept()
+        client_socket, addr = MC_SUB_SERVER_SOCKET.accept()
+
+        # 4. receive message and log
+        while True:
+            msg= client_socket.recv(MSG_SIZE)
+
+            if not msg: 
+                break
+            print("received from MC:", msg)
         
             
     # Close the connection
