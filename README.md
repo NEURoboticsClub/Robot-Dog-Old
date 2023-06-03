@@ -7,7 +7,7 @@ Docker installed
 docker compose up --build
 
 ## To run client: 
-python3 mc_test.py  
+/usr/bin/python2.7 mc_test.py
 
 ## To stop containers: 
 docker compose down

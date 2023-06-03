@@ -8,6 +8,47 @@ SERVER_PORT = 9999
 FORMAT = "utf-8"
 MSG_SIZE = 1024
 
+def get_cpu_info(s):
+    # init random id
+    id = 1
+    single_json = []
+    while True:
+
+        try:
+            # 1. get message and process
+            raw_msg = s.recv(MSG_SIZE)
+            if raw_msg:
+
+                # 2. split msg by newline
+                messages = raw_msg.split("\n")
+                for single_line in messages:
+                    
+                    # 3. keep storing to buffer
+                    single_json.append(single_line)
+
+                    # 4. if this is the end, of a single json
+                    if single_line and single_line[-1] == "}":
+
+                        # join as string
+                        res = "".join(single_json)
+
+                        # ready for next json
+                        single_json = []
+
+                        print("res={}, id={}".format(res, id))
+                        id+=1
+            else:
+                print("no response")
+        
+        except socket.timeout as e:
+            print("Timeout occurred while waiting for response: {}".format(e))
+        
+        except IOError as e:  
+            if e.errno == errno.EPIPE:  
+                print("broken pipe: {}".format(e))
+
+
+
 def main():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
@@ -17,40 +58,9 @@ def main():
     # Connection to server on local machine
     s.connect((SERVER_HOST, SERVER_PORT))
 
-    # init random id
-    id = 1
-    # create 5 request (single thread)
-    for _ in range(5):
-        print(f"sending request id=",id)
-        # 1.Send data to server
-        data_to_send = {"request_topic": "test", "id": id}
-        s.send(json.dumps(data_to_send).encode(FORMAT))
+    get_cpu_info(s)
 
-        # 2. Receive from server
-        try:
-            msg = s.recv(MSG_SIZE)
-
-            if msg:
-                ros_data = json.loads(msg.decode(FORMAT))
-            
-                # 3. log the received data
-                print(f"Received ROS data: {ros_data}, curr_host={SERVER_HOST}")
-            else:
-                print("no response")
-        
-        except socket.timeout as e:
-            print(f"Timeout occurred while waiting for response: {e}")
-        
-        except IOError as e:  
-            if e.errno == errno.EPIPE:  
-                print(f"broken pipe=",e)
-
-        except socket.error as e:
-            print(f"An error occurred: {e}")
-        
-        # Handling of the error
-        id +=1
-
+    
     # Close the socket
     s.close()
 

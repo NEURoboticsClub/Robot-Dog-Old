@@ -41,20 +41,12 @@ if __name__ == "__main__":
         print("Got a connection from {}, curr_host={}".format(str(addr), HOST))
 
 
-        # 4.inner loop for handling multiple requests from same client
+        # 4.keep sending updated message to client
         while True:  
-            msg = client_socket.recv(1024)
-
-            # 5. if no message received, break the loop to accept a new connection
-            if not msg:
-                break  
-
-            # 6. print requested
-            client_data = json.loads(msg.decode("utf-8"))
-            print("Received client data: {}".format(client_data))
-
-            # 7. send back to client
-            client_socket.send(json.dumps({"datax": data_buffer["test_topic"], "id": client_data['id']}).encode("utf-8"))
-
+            # convert dict to json string
+            json_data = json.dumps({"datax": data_buffer["test_topic"]}) +"\n"
+            print("sendin-->", json_data)
+            client_socket.send(json_data)
     # Close the connection
+
     client_socket.close()
