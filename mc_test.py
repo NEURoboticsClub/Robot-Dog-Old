@@ -1,13 +1,14 @@
 import socket
 import json
 import errno
+import threading
 
 # Get local machine name
 SERVER_HOST = socket.gethostname()
 SERVER_PORT = 9999
 MSG_SIZE = 1024
 
-def get_cpu_info(s):
+def get_cpu_info(cpu_sub):
     # init random id
     id = 1
     single_json = []
@@ -15,7 +16,7 @@ def get_cpu_info(s):
 
         try:
             # 1. get message and process
-            raw_msg = s.recv(MSG_SIZE)
+            raw_msg = cpu_sub.recv(MSG_SIZE)
             if raw_msg:
 
                 # 2. split msg by newline
@@ -45,22 +46,22 @@ def get_cpu_info(s):
         except IOError as e:  
             if e.errno == errno.EPIPE:  
                 print("broken pipe: {}".format(e))
-
+      
 
 def main():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
     # Set a timeout for socket operations
     s.settimeout(10.0)
-
     # Connection to server on local machine
     s.connect((SERVER_HOST, SERVER_PORT))
 
-    get_cpu_info(s)
+    get_cpu_info_thread = threading.Thread(target=get_cpu_info, args=(s,))
+    get_cpu_info_thread.start()
 
-    
-    # Close the socket
-    s.close()
+    while True:
+        pass
 
 if __name__ == "__main__":
     main()
