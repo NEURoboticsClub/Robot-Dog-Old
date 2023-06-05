@@ -40,6 +40,7 @@ def get_cpu_info(sock):
                         id+=1
             else:
                 print("no response")
+                break
         
         except socket.timeout as e:
             print("Timeout occurred while waiting for response: {}".format(e))
@@ -54,7 +55,7 @@ def send_mc_info(sock):
     while True:
         # 1. init and send data
         data = {"data": "mc_test", "id":id}
-        sock.send(json.dumps(data))
+        sock.send(json.dumps(data) + "\n") 
 
         # 2 log
         # print("Sent: {}, id={}".format(data,id))
