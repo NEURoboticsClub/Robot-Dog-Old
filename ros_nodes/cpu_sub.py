@@ -30,6 +30,7 @@ if __name__ == "__main__":
 
     # 2. init server socket to listen to client request
     SERVER_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    SERVER_SOCKET.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     HOST = socket.gethostname()
     PORT = 9999
     SERVER_SOCKET.bind((HOST, PORT))

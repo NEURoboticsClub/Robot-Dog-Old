@@ -65,6 +65,7 @@ def main():
     # 1. init socket and time out to listen to cpu_sub node
     cpu_sub_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     cpu_sub_socket.settimeout(10.0)
+    # connect to server
     cpu_sub_socket.connect((SERVER_HOST, CPU_SUB_SERVER_PORT))
 
     # 2. inis socket and timeout to send msg to mc_sub node
