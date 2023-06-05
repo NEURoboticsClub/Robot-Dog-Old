@@ -35,7 +35,6 @@ def get_mc_info(sock):
                         global mc_data
                         mc_data = "".join(single_json)
                         
-
                         # ready for next json
                         single_json = []
 

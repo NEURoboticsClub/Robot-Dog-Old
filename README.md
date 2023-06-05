@@ -1,7 +1,8 @@
 # ros-docker
 
 ## PREREQUSITES:  
-Docker installed  
+Docker and docker compose installed
+https://docs.docker.com/compose/install/linux/#install-using-the-repository  
 
 ## To run all containers: 
 docker compose up --build
