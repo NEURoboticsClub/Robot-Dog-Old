@@ -55,7 +55,7 @@ def get_mc_info(sock):
 def publish_mc_topic():
     
     # publish messages at 50 Hz
-    rate = rospy.Rate(100)
+    rate = rospy.Rate(1500)
     while not rospy.is_shutdown():
         msg = String()
         if mc_data:
