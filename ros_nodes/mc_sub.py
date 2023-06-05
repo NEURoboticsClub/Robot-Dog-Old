@@ -1,35 +1,69 @@
 import rospy
+from std_msgs.msg import String
 import socket
 import threading
+import errno
 
 
 # global variable
-# client_socket = None
-data_buffer = {} # ROStopic: data
+global mc_data
+mc_data = ""
 
 
 def get_mc_info(sock):
-
-    # 4. receive message and log
+    # init random id
+    id = 1
+    single_json = []
     while True:
-        msg = sock.recv(MSG_SIZE)
 
-        if not msg:
-            break
-        print("Received from MC:", msg)
+        try:
+            # 1. get message and process
+            raw_msg = sock.recv(MSG_SIZE)
+            if raw_msg:
 
+                # 2. split msg by newline
+                messages = raw_msg.split("\n")
+                for single_line in messages:
+                    
+                    # 3. keep storing to buffer
+                    single_json.append(single_line)
 
-# def publish_messages():
-#     # init ROS publisher
-#     pub = rospy.Publisher('topic', std_msgs.msg.String, queue_size=10)
+                    # 4. if this is the end, of a single json
+                    if single_line and single_line[-1] == "}":
 
-#     # publish messages at 50 Hz
-#     rate = rospy.Rate(50)
-#     while not rospy.is_shutdown():
-#         msg = std_msgs.msg.String()
-#         msg.data = "Hello, world!"
-#         pub.publish(msg)
-#         rate.sleep()
+                        # join as string
+                        global mc_data
+                        mc_data = "".join(single_json)
+                        
+
+                        # ready for next json
+                        single_json = []
+
+                        # print("MC_SUB=Received from MC={}, id={}".format(mc_data, id))
+                        id+=1
+            else:
+                print("no response")
+                break
+        
+        except socket.timeout as e:
+            print("Timeout occurred while waiting for response: {}".format(e))
+        
+        except IOError as e:  
+            if e.errno == errno.EPIPE:  
+                print("broken pipe: {}".format(e))
+
+def publish_mc_topic():
+    
+    # publish messages at 50 Hz
+    rate = rospy.Rate(100)
+    while not rospy.is_shutdown():
+        msg = String()
+        if mc_data:
+            msg.data = mc_data
+        else:
+            msg.data = "no data yet"
+        pub.publish(msg)
+        rate.sleep()
 
 
 if __name__ == "__main__":
@@ -37,8 +71,9 @@ if __name__ == "__main__":
 
     # 1. init node
     rospy.init_node('mcsub_node')
+    pub = rospy.Publisher('mc_topic',String, queue_size=10)
 
-        # init server socket to listen to client req
+    # 2. init server socket to listen to client req
     HOST = socket.gethostname()
     MSG_SIZE = 1024
     MC_SUB_PORT = 9998
@@ -55,9 +90,9 @@ if __name__ == "__main__":
     listen_thread = threading.Thread(target=get_mc_info, args=(client_socket,))
     listen_thread.start()
 
-    # # start publishing messages in a separate thread
-    # publish_thread = threading.Thread(target=publish_messages)
-    # publish_thread.start()
+    # start publishing messages in a separate thread
+    publish_thread = threading.Thread(target=publish_mc_topic)
+    publish_thread.start()
 
     # main loop
     while not rospy.is_shutdown():

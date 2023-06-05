@@ -1,8 +1,9 @@
 #!/usr/bin/env python2
 import rospy
+from std_msgs.msg import String
 import socket
 import json
-from std_msgs.msg import String
+
 
 
 # global variable
@@ -42,7 +43,7 @@ if __name__ == "__main__":
         client_socket, addr = SERVER_SOCKET.accept()
         print("Got a connection from {}, curr_host={}".format(str(addr), HOST))
 
-        # 4.keep sending messages received from CPU to MC
+        # 4.keep sending new messages
         while True:  
             # convert dict to json string
             json_data = json.dumps({"data": data_buffer[TOPIC]}) +"\n"

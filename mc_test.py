@@ -36,7 +36,7 @@ def get_cpu_info(sock):
                         # ready for next json
                         single_json = []
 
-                        print("Received from cpu_sub={}, id={}".format(res, id))
+                        print("MC: from cpu_sub={}, id={}".format(res, id))
                         id+=1
             else:
                 print("no response")
