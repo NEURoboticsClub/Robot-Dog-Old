@@ -1,9 +1,11 @@
 # ros-docker
 
 ## PREREQUSITES:  
-Docker and docker compose installed  
+1. Docker and docker compose installed in your machine and Pi  
+Follow the link below to install docker compose in linux:  
 https://docs.docker.com/compose/install/linux/#install-using-the-repository  
-Python 2.7 installed  
+
+2. Python 2.7 installed in PI  
 
 ## OPTION 1: Run ros master and cpu node in linux, bridge nodes in pi:  
 
