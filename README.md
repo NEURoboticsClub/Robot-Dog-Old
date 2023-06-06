@@ -29,7 +29,7 @@ The ROS_IP is to identify which container ip the cpu_node is in.
 #### Step 1.2: Inside the pi dir, get the ROS_IP for docker-compose:  
 Now we want to do the same for the nodes in our PI. 
 In your pi terminal enter: 
-```hostname -I```
+```hostname -I```.  
 Get the ip address that has the same first few digits as the one in your CPU since they are connected with ethernet
 You will see the output like below  :
 ```10.42.0.215 172.17.0.1 ```  
