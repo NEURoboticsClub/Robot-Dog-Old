@@ -11,7 +11,7 @@ Copy the cpu directory in your machine
 Copy the pi directory in your pi
 
 ## Step 1: Run ros-master, cpu-node, bridge-nodes:  
-## Option1: ros-master and cpu-node in cpu, bridge-nodes in pi:  
+### Option1: ros-master and cpu-node in cpu, bridge-nodes in pi:  
 ### Step 1.1: Get ROS_MASTER_URI and ROS_IP from your CPU machine for the docker-compose in the cpu directory
 Make sure Raspberry pi is connected to CPU  
 Enter the command below in your machine to get ROS_MASTER_URI which is the ip address of your machine:  
@@ -48,11 +48,11 @@ cd into cpu folder in your linux machine
 ### Step 1.4: run bridge nodes in pi:  
 ```docker compose up --build``` 
 
-## OPTION 2: all nodes in pi
+### OPTION 2: all nodes in pi
 ```docker compose -f docker-compose-allpi.yaml up --build```
 
-## run motor controller in pi:  
+## Step 2: run motor controller in pi:  
 ```/usr/bin/python2.7 mc_test.py```  
 
-## To stop containers:  
+## Step 3: To stop containers:  
 ```docker compose down```
