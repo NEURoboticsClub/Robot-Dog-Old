@@ -11,7 +11,7 @@ Copy the cpu directory into your machine (non-PI).
 Copy the pi directory into your PI
 
 ## Step 1: Run ros-master, cpu-node, bridge-nodes:  
-### OPTION 1: ros-master and cpu-node in your machine, bridge-nodes in PI:  
+### OPTION 1: ros-master and cpu-node in your machine, and bridge-nodes in PI:  
 #### Step 1.1: Inside the cpu dir, get ROS_MASTER_URI and ROS_IP from your CPU machine for the docker-compose
 Make sure Raspberry PI is connected to your machine.    
 Enter the command below in your machine to get ROS_MASTER_URI which is the ip address of your machine:  
