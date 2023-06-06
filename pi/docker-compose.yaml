@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+  bridge-container:
+    build:
+      context: ./bridge_nodes
+      dockerfile: Dockerfile
+    environment:
+      - "ROS_MASTER_URI=http://10.42.0.1:11311"
+      - "ROS_IP=10.42.0.215"
+    command: bash -c "source /opt/ros/melodic/setup.bash && ./run.sh"
+    network_mode: host
+    tty: true
