@@ -17,9 +17,9 @@ Example:
 The ip address is 10.42.0.1  
 Then then environment variables in docker-compose file in cpu directory should have the following:  
 ```"ROS_MASTER_URI=http://10.42.0.1:11311"```  
-```"ROS_IP=10.42.0.1"```. 
-ROS_MASTER_URI is to identify which container ip the ROS master is in.  
-ROS_IP is to identify which container ip the cpu_node is in. 
+```"ROS_IP=10.42.0.1"```  
+The ROS_MASTER_URI is to identify which container ip the ROS master is in.  
+The ROS_IP is to identify which container ip the cpu_node is in. 
 
 ### Step 1: Get the ROS_IP for docker-compose inside pi directory:  
 Now we want to do the same for the nodes in our pi. 
@@ -32,7 +32,7 @@ Notice that the first one has the same first few digits as the one in linux. Thi
 We can use this. Then your docker-compose file in pi directory, the environment variable should have:  
 ```"ROS_MASTER_URI=http://10.42.0.1:11311"```  
 ```"ROS_IP=10.42.0.215"```  
-ROS_IP is to identify which container ip the bridge nodes are in. 
+The ROS_IP is to identify which container ip the bridge nodes are in. 
 This is needed so that ROS nodes can communicate with each other not just with the master  
 
 
