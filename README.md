@@ -33,8 +33,8 @@ In your pi terminal enter:
 Get the ip address that has the same first few digits as the one in your CPU since they are connected with ethernet
 You will see the output like below  :
 ```10.42.0.215 172.17.0.1 ```  
-Notice that the first one has the same first few digits as the one in the previous step. This is the ip for PI container that we want to use.  
-We can use this. In your docker-compose file in PI directory, add the following to your environment variable:  
+Notice that the first one has the same first few digits as the one in the previous step. That is the ip for PI container that we want to use.  
+Now in your docker-compose file in PI directory, add the following to your environment variable:  
 ```"ROS_MASTER_URI=http://10.42.0.1:11311"```  
 ```"ROS_IP=10.42.0.215"```  
 The ROS_IP is to identify which container ip the bridge nodes are in. 
