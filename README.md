@@ -18,7 +18,7 @@ then the environment variables will be:
 "ROS_MASTER_URI=http://10.42.0.1:11311"  
 "ROS_IP=10.42.0.1"  
 
-### Step 1: Get the ROS_IP for docker-compose in pi  
+### Step 1: Get the ROS_IP for docker-compose inside pi directory:  
 in you pi terminal enter: 
 ```hostname -I```
 Get the ip address that has the same first few digits as the one in your CPU since they are connected with ethernet
@@ -36,17 +36,14 @@ cd into cpu folder in your linux machine
 ```docker compose up --build```  
 
 ### Step 3: run bridge nodes in pi:  
-docker compose up --build  
+```docker compose up --build``` 
 
-### Step 4: run motor controller:  
-/usr/bin/python2.7 mc_test.py  
-
-### OPTION 2:  
+## OPTION 2:  
 ### Step 1: Run rosmaster, bridge nodes and cpu node in pi:
 ```docker compose -f docker-compose-allpi.yaml up --build```
 
-### Step 2: run motor controller:  
-/usr/bin/python2.7 mc_test.py  
+## run motor controller:  
+```/usr/bin/python2.7 mc_test.py```  
 
 ## To stop containers:  
-docker compose down
+```docker compose down```
