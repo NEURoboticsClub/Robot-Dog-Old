@@ -49,7 +49,7 @@ cd into cpu folder in your linux machine
 ### Step 1: Run rosmaster, bridge nodes and cpu node in pi:
 ```docker compose -f docker-compose-allpi.yaml up --build```
 
-## run motor controller:  
+## run motor controller in pi:  
 ```/usr/bin/python2.7 mc_test.py```  
 
 ## To stop containers:  
