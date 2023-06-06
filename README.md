@@ -42,13 +42,13 @@ This is needed so that ROS nodes can communicate with each other not just with t
 
 
 #### Step 1.3: Inside cpu dir, run cpu and master node:  
-cd into cpu folder in your linux machine  
 ```docker compose up --build```  
 
 #### Step 1.4: Inside pi dir, run bridge nodes:  
 ```docker compose up --build``` 
 
 ### OPTION 2: Run all nodes in pi:  
+cd into the pi directory and run:  
 ```docker compose -f docker-compose-allpi.yaml up --build```
 
 ## Step 2: Inside pi dir, run motor controller:  
