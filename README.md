@@ -12,7 +12,7 @@ Copy the pi directory in your pi
 
 ## Step 1: Run ros-master, cpu-node, bridge-nodes:  
 ### OPTION 1: ros-master and cpu-node in cpu, bridge-nodes in pi:  
-#### Step 1.1: Get ROS_MASTER_URI and ROS_IP from your CPU machine for the docker-compose in the cpu directory
+#### Step 1.1: Inside the cpu dir, get ROS_MASTER_URI and ROS_IP from your CPU machine for the docker-compose
 Make sure Raspberry pi is connected to CPU  
 Enter the command below in your machine to get ROS_MASTER_URI which is the ip address of your machine:  
 ```ifconfig```  
@@ -26,7 +26,7 @@ Then then environment variables in docker-compose file in cpu directory should h
 The ROS_MASTER_URI is to identify which container ip the ROS master is in.  
 The ROS_IP is to identify which container ip the cpu_node is in. 
 
-#### Step 1.2: Get the ROS_IP for docker-compose inside pi directory:  
+#### Step 1.2: Inside the pi dir, get the ROS_IP for docker-compose:  
 Now we want to do the same for the nodes in our pi. 
 In your pi terminal enter: 
 ```hostname -I```
@@ -41,18 +41,18 @@ The ROS_IP is to identify which container ip the bridge nodes are in.
 This is needed so that ROS nodes can communicate with each other not just with the master  
 
 
-#### Step 1.3: run cpu and master node in cpu:  
+#### Step 1.3: Inside cpu dir, run cpu and master node:  
 cd into cpu folder in your linux machine  
 ```docker compose up --build```  
 
-#### Step 1.4: run bridge nodes in pi:  
+#### Step 1.4: Inside pi dir, run bridge nodes:  
 ```docker compose up --build``` 
 
-### OPTION 2: all nodes in pi
+### OPTION 2: Run all nodes in pi:  
 ```docker compose -f docker-compose-allpi.yaml up --build```
 
-## Step 2: run motor controller in pi:  
+## Step 2: Inside pi dir, run motor controller:  
 ```/usr/bin/python2.7 mc_test.py```  
 
-## Step 3: To stop containers:  
+## Step 3: To stop any running containers:  
 ```docker compose down```
