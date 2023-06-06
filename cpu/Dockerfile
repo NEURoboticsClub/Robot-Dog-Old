@@ -11,4 +11,4 @@ COPY cpu.py ./cpu.py
 
 # prepares your shell session to use the ROS commands and tools
 # run the publisher node
-CMD ["bash", "-c", "source /opt/ros/melodic/setup.bash && python cpu_pi.py"]
+CMD ["bash", "-c", "source /opt/ros/melodic/setup.bash && python cpu.py"]

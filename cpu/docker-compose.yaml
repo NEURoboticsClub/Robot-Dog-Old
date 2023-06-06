@@ -1,0 +1,21 @@
+version: '3.7'
+services:
+  ros-master:
+    image: ros:melodic-ros-core
+    command: roscore
+    # forgo the network isolation between container and host
+    # will make network.gethostname() use the address of raspberry pi not container
+    network_mode: host 
+  cpu-node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - "ROS_MASTER_URI=http://10.42.0.1:11311"
+      - "ROS_IP=10.42.0.1" # to communicate between node
+    command: bash -c "source /opt/ros/melodic/setup.bash && python cpu.py"
+    depends_on:
+      - ros-master
+    network_mode: host
+    # allow python to print to output immediately
+    tty: true 
