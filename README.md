@@ -7,7 +7,7 @@ https://docs.docker.com/compose/install/linux/#install-using-the-repository
 
 2. Python 2.7 installed in PI  
 ## Step 0: Prepare the workspace directory in both machine:  
-Copy the cpu directory in your machine
+Copy the cpu directory in your machine.  
 Copy the pi directory in your pi
 
 ## Step 1: Run ros-master, cpu-node, bridge-nodes:  
