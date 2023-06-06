@@ -6,10 +6,13 @@ Follow the link below to install docker compose in linux:
 https://docs.docker.com/compose/install/linux/#install-using-the-repository  
 
 2. Python 2.7 installed in PI  
+## Step 0: Prepare the workspace directory in both machine:  
+Copy the cpu directory in your machine
+Copy the pi directory in your pi
 
-## OPTION 1: Run ros master and cpu node in linux, bridge nodes in pi:  
-
-### Step 0: Get ROS_MASTER_URI and ROS_IP from your CPU machine for the docker-compose in the cpu directory
+## Step 1: Run ros-master, cpu-node, bridge-nodes:  
+## Option1: ros-master and cpu-node in cpu, bridge-nodes in pi:  
+### Step 1.1: Get ROS_MASTER_URI and ROS_IP from your CPU machine for the docker-compose in the cpu directory
 Make sure Raspberry pi is connected to CPU  
 Enter the command below in your machine to get ROS_MASTER_URI which is the ip address of your machine:  
 ```ifconfig```  
@@ -23,7 +26,7 @@ Then then environment variables in docker-compose file in cpu directory should h
 The ROS_MASTER_URI is to identify which container ip the ROS master is in.  
 The ROS_IP is to identify which container ip the cpu_node is in. 
 
-### Step 1: Get the ROS_IP for docker-compose inside pi directory:  
+### Step 1.2: Get the ROS_IP for docker-compose inside pi directory:  
 Now we want to do the same for the nodes in our pi. 
 In your pi terminal enter: 
 ```hostname -I```
@@ -38,15 +41,14 @@ The ROS_IP is to identify which container ip the bridge nodes are in.
 This is needed so that ROS nodes can communicate with each other not just with the master  
 
 
-### Step 2: run cpu and master node in cpu:  
+### Step 1.3: run cpu and master node in cpu:  
 cd into cpu folder in your linux machine  
 ```docker compose up --build```  
 
-### Step 3: run bridge nodes in pi:  
+### Step 1.4: run bridge nodes in pi:  
 ```docker compose up --build``` 
 
-## OPTION 2:  
-### Step 1: Run rosmaster, bridge nodes and cpu node in pi:
+## OPTION 2: all nodes in pi
 ```docker compose -f docker-compose-allpi.yaml up --build```
 
 ## run motor controller in pi:  
