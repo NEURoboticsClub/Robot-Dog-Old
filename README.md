@@ -19,7 +19,7 @@ Enter the command below in your machine to get ROS_MASTER_URI which is the ip ad
 If you are connected to PI using ethernet, find the ip address that starts with "enx"  
 Example:  
 ```enx00e04c681fa8: flags=4163<UP,BROADCAST,RUNNING,MULTICAST> \n mtu 1500 inet 10.42.0.1  netmask 255.255.255.0  broadcast 10.42.0.255 ```
-The ip address is 10.42.0.1  
+The ip address we want is 10.42.0.1  
 Then then environment variables in docker-compose file in cpu directory should have the following:  
 ```"ROS_MASTER_URI=http://10.42.0.1:11311"```  
 ```"ROS_IP=10.42.0.1"```  
