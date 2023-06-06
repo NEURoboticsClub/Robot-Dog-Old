@@ -11,11 +11,11 @@ services:
   #   network_mode: host 
   # cpu-node:
   #   build:
-  #     context: ./cpu
+  #     context: ./cpu_pi
   #     dockerfile: Dockerfile
   #   environment:
   #     - "ROS_MASTER_URI=http://localhost:11311"
-  #   command: bash -c "source /opt/ros/melodic/setup.bash && python cpu.py"
+  #   command: bash -c "source /opt/ros/melodic/setup.bash && python cpu_pi.py"
   #   depends_on:
   #     - ros-master
   #   network_mode: host 
@@ -23,12 +23,12 @@ services:
 
   server:
     build:
-      context: ./ros_nodes
+      context: ./ros_pi
       dockerfile: Dockerfile
     environment:
       # uncomment this if we want to connect to cpu and master on linux
       - "ROS_MASTER_URI=http://10.42.0.1:11311"
-      # THIS IS NECESSARY:
+      # THIS IS NECESSARY, CPU cannot get message otherwise
       - "ROS_IP=10.42.0.215"
       # - "ROS_MASTER_URI=http://localhost:11311"
     command: bash -c "source /opt/ros/melodic/setup.bash && ./run.sh"
