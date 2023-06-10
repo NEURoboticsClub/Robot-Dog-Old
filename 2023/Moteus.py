@@ -13,6 +13,7 @@ import asyncio
 from threading import Thread
 from threading import Lock
 import math
+import json
 from time import sleep
 import traceback
 from copy import deepcopy
@@ -613,4 +614,16 @@ if __name__ == '__main__':
 #to add:
 #flux braking- moteus defaults to discharging voltage when braking to DC power bus
 #servo.flux_brake_min_voltage and servo.flux_brake_resistance_ohm can change this
+
+    def parsingJson(fileName, self):
+        while True:
+            f = open(fileName)
+            data = json.load(f) #load json file data as a library
+            motorId = data['motor-id']
+            pos = data['position']
+            vel = data['velocity']
+            torque = data['torque']
+            self.setAttributes(canId=motorId, pos=pos, velocity=vel, torque=torque)
+            
+
 
