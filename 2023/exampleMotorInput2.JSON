@@ -1,0 +1,18 @@
+{
+    "Value1" : [
+        {
+            "motor-id" : 3,
+            "position" : 7,
+            "velocity" : 8,
+            "torque" : 2
+        }
+    ],
+    "Value2" : [
+        {
+            "motor-id" : 3,
+            "position" : 7,
+            "velocity" : 5,
+            "torque" : 4
+        }
+    ]
+}

@@ -21,6 +21,7 @@ from copy import deepcopy
 from MoteusException import *
 
 class Moteus:
+
     """Class used to manipulate the Moteus motor controllers via CAN using the Pi3Hat
 
         Implements functions in order to set the attributes of all the motors as well as get the current states
@@ -608,22 +609,22 @@ if __name__ == '__main__':
         asyncio.run(main(m))
     except KeyboardInterrupt:
         closeKey(m)
-        sys.exit(0);
-    
-    
+        sys.exit(0)
+
+
 #to add:
 #flux braking- moteus defaults to discharging voltage when braking to DC power bus
-#servo.flux_brake_min_voltage and servo.flux_brake_resistance_ohm can change this
-
-    def parsingJson(fileName, self):
-        while True:
-            f = open(fileName)
-            data = json.load(f) #load json file data as a library
-            motorId = data['motor-id']
-            pos = data['position']
-            vel = data['velocity']
-            torque = data['torque']
+    #servo.flux_brake_min_voltage and servo.flux_brake_resistance_ohm can change this
+    def parsingJson(self, fileName):
+        #while True:
+        f = open(fileName) #opening a file that is hopefully JSON
+        allData = json.load(f) #load json file data as a library
+        for i in allData: 
+            data = allData[i]
+            #print(data)
+            motorId = data[0]['motor-id']
+            #['motor-id']
+            pos = data[0]['position']
+            vel = data[0]['velocity']
+            torque = data[0]['torque']
             self.setAttributes(canId=motorId, pos=pos, velocity=vel, torque=torque)
-            
-
-
