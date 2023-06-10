@@ -4,8 +4,9 @@ FROM ros:melodic
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
-    python-pip \
-    && pip2 install pyyaml
+    python3 \
+    python3-pip \
+    && pip3 install pyyaml
 
 COPY cpu.py ./cpu.py
 

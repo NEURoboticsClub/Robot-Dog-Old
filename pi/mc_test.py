@@ -21,7 +21,7 @@ def get_cpu_info(sock):
             if raw_msg:
 
                 # 2. split msg by newline
-                messages = raw_msg.split("\n")
+                messages = raw_msg.decode().split("\n")
                 for single_line in messages:
                     
                     # 3. keep storing to buffer
@@ -55,7 +55,8 @@ def send_mc_info(sock):
     while True:
         # 1. init and send data
         data = {"data": "hello from mc", "id":id}
-        sock.send(json.dumps(data) + "\n") 
+        sock.send((json.dumps(data) + "\n").encode())
+
 
         # 2 log
         # print("Sent: {}, id={}".format(data,id))
