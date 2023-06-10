@@ -5,7 +5,7 @@
 Follow the link below to install docker compose in linux:  
 https://docs.docker.com/compose/install/linux/#install-using-the-repository  
 
-2. Python 2.7 installed in PI  
+2. Python3 installed in PI  
 ## Step 0: Prepare the workspace directory in both machine:  
 Copy the cpu directory into your machine (non-PI).  
 Copy the pi directory into your PI
@@ -52,7 +52,7 @@ cd into the pi directory and run:
 ```docker compose -f docker-compose-allpi.yaml up --build```
 
 ## Step 2: Inside pi dir, run motor controller:  
-```/usr/bin/python2.7 mc_test.py```  
+```python3 mc_test.py```  
 
 ## Step 3: To stop any running containers:  
 ```docker compose down```

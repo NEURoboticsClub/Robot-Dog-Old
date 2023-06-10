@@ -502,7 +502,7 @@ class Moteus:
         self.setAttributes(1,pos=math.nan,velocity=0, torque=2)
         self.setAttributes(2,pos=math.nan,velocity=0, torque=2)
     
-    def get_cpu_info(sock):
+    def get_cpu_info(self, sock):
         # init random id
         id = 1
         single_json = []
@@ -542,7 +542,7 @@ class Moteus:
                 if e.errno == errno.EPIPE:  
                     print("broken pipe: {}".format(e))
       
-    def send_mc_info(sock):
+    def send_mc_info(self, sock):
         id = 1
         while True:
             # 1. init and send data
@@ -558,35 +558,35 @@ async def main(m):
     
     #eventLoop=asyncio.get_event_loop()
     value = m.getParsedResults()
-    to = 3                      #0.1 seems to be the lower limit for a stanalone motor. This is max torque.
-    vel = 1
+    # to = 3                      #0.1 seems to be the lower limit for a stanalone motor. This is max torque.
+    # vel = 1
     pos_offset1 = value[0]["POSITION"]           #board can sense where position 0 is via absolute encoder within 1/10 rotation this offset changes where it's zero is
-    pos_offset2 = value[1]["POSITION"]
-    print(pos_offset1)
-    print(pos_offset2)
+    # pos_offset2 = value[1]["POSITION"]
+    # print(pos_offset1)
+    # print(pos_offset2)
     max_pos = 5 + pos_offset1
     min_pos = 0 + pos_offset1
-    init_pos1 = -10*(math.pi/4)
-    counter = 0
-    oper=1
-    flag=1
-    print(pos_offset1)
-    #jumptask=asyncio.create_task(m.jump(8, pos_offset1, pos_offset2))
-    #await jumptask
-    print(pos_offset2)
-    #transport.cycle([m.pid_position(ilimit=2)])
-    #m.setAttributes(2, pos=math.nan, velocity = vel, torque=to)
+    # init_pos1 = -10*(math.pi/4)
+    # counter = 0
+    # oper=1
+    # flag=1
+    # print(pos_offset1)
+    # #jumptask=asyncio.create_task(m.jump(8, pos_offset1, pos_offset2))
+    # #await jumptask
+    # print(pos_offset2)
+    # #transport.cycle([m.pid_position(ilimit=2)])
+    # #m.setAttributes(2, pos=math.nan, velocity = vel, torque=to)
     
-    m.velocity_limit = 1
-    torques = []
-    #task0=asyncio.create_task(m.asyncTest())
-    #await m.turnTo(1, pos=0, speed=1, torque=1, tol=0.2)
-    #task2= asyncio.create_task(m.turnTo(1, pos=-5, speed=1, torque=1, tol=0.01))
-    #task1= asyncio.create_task(m.turnTo(1, pos=0.5*10+pos_offset1, speed=1, torque=1, tol=0.01))
-    #await task2
-    #await task1
+    # m.velocity_limit = 1
+    # torques = []
+    # #task0=asyncio.create_task(m.asyncTest())
+    # #await m.turnTo(1, pos=0, speed=1, torque=1, tol=0.2)
+    # #task2= asyncio.create_task(m.turnTo(1, pos=-5, speed=1, torque=1, tol=0.01))
+    # #task1= asyncio.create_task(m.turnTo(1, pos=0.5*10+pos_offset1, speed=1, torque=1, tol=0.01))
+    # #await task2
+    # #await task1
 
-    # sockets:
+    # # sockets:
     # 1. init socket and time out to listen to cpu_sub node
     cpu_sub_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     cpu_sub_socket.settimeout(10.0)
@@ -599,26 +599,26 @@ async def main(m):
     mc_sub_socket.connect((SERVER_HOST, MC_SUB_SERVER_PORT))
 
     # 3. init thread
-    get_cpu_info_thread = Thread(target=get_cpu_info, args=(cpu_sub_socket,))
-    send_mc_info_thread = Thread(target=send_mc_info, args=(mc_sub_socket,))
+    get_cpu_info_thread = Thread(target=m.get_cpu_info, args=(cpu_sub_socket,))
+    send_mc_info_thread = Thread(target=m.send_mc_info, args=(mc_sub_socket,))
 
     # 4. run
     get_cpu_info_thread.start()
     send_mc_info_thread.start()
 
-    while True:
-         down1=asyncio.create_task(m.turnTo(1,pos=1.5+pos_offset1,speed=1,torque=0.5,tol=0.1))
-         down2=asyncio.create_task(m.turnTo(2,pos=-3+pos_offset2,speed=2,torque=0.5,tol=0.1))
-         print("Going Down")
-         await down1
-         await down2
-         sleep(2)
-         print("Going Up")
-         up1=asyncio.create_task(m.turnTo(1,pos=pos_offset1,speed=1,torque=0.5,tol=0.01))
-         up2=asyncio.create_task(m.turnTo(2,pos=+pos_offset2,speed=2,torque=0.5,tol=0.01))
-         await up1
-         await up2
-         sleep(2)
+    # while True:
+    #      down1=asyncio.create_task(m.turnTo(1,pos=1.5+pos_offset1,speed=1,torque=0.5,tol=0.1))
+    #      down2=asyncio.create_task(m.turnTo(2,pos=-3+pos_offset2,speed=2,torque=0.5,tol=0.1))
+    #      print("Going Down")
+    #      await down1
+    #      await down2
+    #      sleep(2)
+    #      print("Going Up")
+    #      up1=asyncio.create_task(m.turnTo(1,pos=pos_offset1,speed=1,torque=0.5,tol=0.01))
+    #      up2=asyncio.create_task(m.turnTo(2,pos=+pos_offset2,speed=2,torque=0.5,tol=0.01))
+    #      await up1
+    #      await up2
+    #      sleep(2)
         
     #m.jump(factor=4,posOffset1=pos_offset1,posOffset2=pos_offset2)
 
@@ -659,7 +659,7 @@ async def main(m):
             #print(value)
             #print(flag)
             if(value != None):
-                torques.append(value[0]["TORQUE"])
+                #torques.append(value[0]["TORQUE"])
               #  m.setAttributes(1, pos=None, velocity =oper*vel, torque=to)
                 if(value[0]["POSITION"] >= max_pos):
                     flag=-1
@@ -687,7 +687,7 @@ def closeKey(m):
 
 if __name__ == '__main__':
     try:
-        m = Moteus(ids=[[],[],[], [], []], simulation=False)
+        m = Moteus(ids=[[],[],[2], [], []], simulation=False)
         asyncio.run(main(m))
     except KeyboardInterrupt:
         closeKey(m)
