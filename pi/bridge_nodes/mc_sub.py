@@ -54,7 +54,7 @@ def get_mc_info(sock):
 def publish_mc_topic():
     
     # publish messages at 50 Hz
-    rate = rospy.Rate(1500)
+    rate = rospy.Rate(50)
     while not rospy.is_shutdown():
         msg = String()
         if mc_data:
@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
     # 1. init node
     rospy.init_node('mcsub_node')
-    pub = rospy.Publisher('mc_topic',String, queue_size=10)
+    pub = rospy.Publisher('mc_topic',String, queue_size=100)
 
     # 2. init server socket to listen to client req
     HOST = socket.gethostname()
