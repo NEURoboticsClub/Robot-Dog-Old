@@ -18,13 +18,10 @@ def get_cpu_info(sock):
             if not raw_msg:
                 break # exit the loop if no more data to read
 
-            # 2. split msg by newline
+            # 2. get message and print
             messages = raw_msg.decode()
             print("MC: from CPU={}".format(messages, id))
 
-        except BlockingIOError:
-            # No data available right now, continue on with other work and try again later.
-            continue
         except socket.timeout as e:
             print("Timeout occurred while waiting for response: {}".format(e))
         
@@ -41,7 +38,7 @@ def send_mc_info(sock):
         sock.send((json.dumps(data)).encode())
         id+=1
 
-        # sleep for 20ms (50Hz)
+        # sleep for 20ms so its sending at 50Hz
         time.sleep(0.02)
 
 def main():
@@ -68,8 +65,6 @@ def main():
     get_cpu_info_thread.join()
     send_mc_info_thread.join()
 
-    # while True:
-    #     pass
 
 if __name__ == "__main__":
     main()

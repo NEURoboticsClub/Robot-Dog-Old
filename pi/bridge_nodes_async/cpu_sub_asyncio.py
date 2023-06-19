@@ -22,7 +22,6 @@ async def send_to_mc(websocket, path):
         while True:
             if not cpu_data.empty():
                 data = cpu_data.get()
-                print("sending data")
                 json_data = json.dumps({"data": data}) + "\n"
                 await websocket.send(json_data)
             else:
