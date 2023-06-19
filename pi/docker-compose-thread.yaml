@@ -2,7 +2,7 @@ version: '3.7'
 services:
   bridge-container:
     build:
-      context: ./bridge_nodes
+      context: ./bridge_nodes_thread
       dockerfile: Dockerfile
     environment:
       - "ROS_MASTER_URI=http://10.42.0.1:11311"
