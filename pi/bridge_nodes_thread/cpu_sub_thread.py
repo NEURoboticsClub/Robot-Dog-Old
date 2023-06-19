@@ -13,7 +13,7 @@ cpu_data = ""
 # Callback function when publisher publish something on this topic
 def callback(data):
     global client_socket, cpu_data
-    rospy.loginfo("CPU_SUB: %s", data.data)
+    # rospy.loginfo("CPU_SUB: %s", data.data)
 
     # save latest data on this topic
     cpu_data = data.data
@@ -21,8 +21,8 @@ def callback(data):
 def send_to_mc(sock):
     # convert dict to json string
     while True:
-        json_data = json.dumps({"data": cpu_data}) +"\n"
-        sock.send(json_data)
+        json_data = json.dumps({"data": cpu_data})
+        sock.send(json_data.encode('utf-8'))
 
 
 if __name__ == "__main__":
@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
     # 3. connect with new client (MC)
     client_socket, addr = SERVER_SOCKET.accept()
-    print("Got a connection from {}, curr_host={}".format(str(addr), HOST))
+    print("CPU_SUB=Got a connection from {}, curr_host={}".format(str(addr), HOST))
     
     # while not rospy.is_shutdown():
 

@@ -11,38 +11,17 @@ CPU_SUB_SERVER_PORT = 9999
 MC_SUB_SERVER_PORT = 9998
 
 def get_cpu_info(sock):
-    # init random id
-    single_json = []
     while True:
-
         try:
             # 1. get message and process
             raw_msg = sock.recv(MSG_SIZE)
             if not raw_msg:
-                    break # exit the loop if no more data to read
-
-            
+                break # exit the loop if no more data to read
 
             # 2. split msg by newline
-            messages = raw_msg.decode().split("\n")
-            for single_line in messages:
-                
-                # 3. keep storing to buffer
-                single_json.append(single_line)
+            messages = raw_msg.decode()
+            print("MC: from CPU={}".format(messages, id))
 
-                # 4. if this is the end, of a single json
-                if single_line and single_line[-1] == "}":
-
-                    # join as string
-                    res = "".join(single_json)
-
-                    # ready for next json
-                    single_json = []
-
-                    print("MC: from CPU={}".format(res, id))
-            # else:
-            #     print("no response")
-            #     break
         except BlockingIOError:
             # No data available right now, continue on with other work and try again later.
             continue
@@ -59,11 +38,7 @@ def send_mc_info(sock):
     while True:
         # 1. init and send data
         data = {"data": "hello from mc", "id":id}
-        sock.send((json.dumps(data) + "\n").encode())
-
-
-        # 2 log
-        # print("Sent: {}, id={}".format(data,id))
+        sock.send((json.dumps(data)).encode())
         id+=1
 
         # sleep for 20ms (50Hz)
