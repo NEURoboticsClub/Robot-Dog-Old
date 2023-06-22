@@ -503,7 +503,7 @@ class Moteus:
         self.setAttributes(1,pos=math.nan,velocity=0, torque=2)
         self.setAttributes(2,pos=math.nan,velocity=0, torque=2)
     
-    def get_cpu_info(self, sock):
+    def get_cpu_info(self, sock, m):
         while True:
             try:
                 # 0. get message and process
@@ -521,10 +521,15 @@ class Moteus:
                 final_msg = json.loads(json_msg["data"]) # second deserialization
                 msg_id = final_msg["id"]
                 mc12 = final_msg["mc12"]
+
+                # 3. get data for 2nd motor (1st index)
                 mc2data = mc12[1]
-                
+                # pos, vel , tor
                 print("MC: from CPU id={}, m_mc2={}".format(msg_id, mc2data))
 
+                # 4. set attributes
+                m.setAttributes(mc2data[0], pos=mc2data[1], velocity = mc2data[2], torque=mc2data[3])
+    
 
             except socket.timeout as e:
                 print("Timeout occurred while waiting for response: {}".format(e))
@@ -536,7 +541,7 @@ class Moteus:
       
     def send_mc_info(self, sock):
         id = 1
-        mcs12 = [[mcid, math.nan, 2.0, 1.0] for mcid in range(12)]
+        mcs12 = [[mcid, math.nan, 2.0, 1.0] for mcid in range(1, 13)]
 
         while True:
             # 1. init and send data
@@ -592,7 +597,7 @@ async def main(m):
     mc_sub_socket.connect((SERVER_HOST, MC_SUB_SERVER_PORT))
 
     # 3. init thread
-    get_cpu_info_thread = Thread(target=m.get_cpu_info, args=(cpu_sub_socket,))
+    get_cpu_info_thread = Thread(target=m.get_cpu_info, args=(cpu_sub_socket, m,))
     send_mc_info_thread = Thread(target=m.send_mc_info, args=(mc_sub_socket,))
 
     # # 4. run
