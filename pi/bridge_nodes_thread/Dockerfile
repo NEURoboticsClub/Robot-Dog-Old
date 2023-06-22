@@ -1,4 +1,4 @@
-# Dockerfile for cpu node
+# Dockerfile_test_node
 FROM ros:melodic
 
 WORKDIR /app
@@ -14,8 +14,9 @@ RUN apt-get update && apt-get install -y \
 
 # Ensure that Python 3.7 is used
 RUN ln -sf /usr/bin/python3.7 /usr/bin/python
-COPY cpu.py ./cpu.py
 
-# prepares your shell session to use the ROS commands and tools
-# run the publisher node
-CMD ["bash", "-c", "source /opt/ros/melodic/setup.bash && python cpu.py"]
+COPY mc_sub_thread.py ./mc_sub_thread.py
+COPY cpu_sub_thread.py ./cpu_sub_thread.py
+COPY run.sh ./run.sh
+
+RUN chmod a+x ./run.sh

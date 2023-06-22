@@ -2,6 +2,7 @@ import socket
 import json
 import errno
 import threading
+import time
 
 # Get local machine name
 SERVER_HOST = socket.gethostname()
@@ -10,38 +11,27 @@ CPU_SUB_SERVER_PORT = 9999
 MC_SUB_SERVER_PORT = 9998
 
 def get_cpu_info(sock):
-    # init random id
-    id = 1
-    single_json = []
     while True:
-
         try:
-            # 1. get message and process
+            # 0. get message and process
             raw_msg = sock.recv(MSG_SIZE)
-            if raw_msg:
+            if not raw_msg:
+                break # exit the loop if no more data to read
 
-                # 2. split msg by newline
-                messages = raw_msg.decode().split("\n")
-                for single_line in messages:
-                    
-                    # 3. keep storing to buffer
-                    single_json.append(single_line)
+            # 1. test get message and print (string)
+            # msg = raw_msg.decode()
+            # print("MC: from CPU={}".format(msg))
 
-                    # 4. if this is the end, of a single json
-                    if single_line and single_line[-1] == "}":
+            # 2. test get actual data
+            msg = raw_msg.decode()
+            json_msg = json.loads(msg) # first deserialization
+            final_msg = json.loads(json_msg["data"]) # second deserialization
+            msg_id = final_msg["id"]
+            mc12 = final_msg["mc12"]
+            
+            print("MC: from CPU id={}, m_mc12={}".format(msg_id, mc12))
 
-                        # join as string
-                        res = "".join(single_json)
 
-                        # ready for next json
-                        single_json = []
-
-                        print("MC: from CPU={}, id={}".format(res, id))
-                        id+=1
-            else:
-                print("no response")
-                break
-        
         except socket.timeout as e:
             print("Timeout occurred while waiting for response: {}".format(e))
         
@@ -52,22 +42,24 @@ def get_cpu_info(sock):
 
 def send_mc_info(sock):
     id = 1
+    mcs12 = [[mcid, 1.1, 1.2, 1.3] for mcid in range(12)]
+
     while True:
         # 1. init and send data
-        data = {"data": "hello from mc", "id":id}
-        sock.send((json.dumps(data) + "\n").encode())
-
-
-        # 2 log
-        # print("Sent: {}, id={}".format(data,id))
+        data = {"mc12": mcs12, "id":id}
+        sock.send((json.dumps(data)).encode())
         id+=1
+
+        # sleep for 20ms so its sending at 50Hz
+        time.sleep(0.02)
 
 def main():
     # 1. init socket and time out to listen to cpu_sub node
     cpu_sub_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    cpu_sub_socket.settimeout(10.0)
+    cpu_sub_socket.settimeout(2.0)
     # connect to server
     cpu_sub_socket.connect((SERVER_HOST, CPU_SUB_SERVER_PORT))
+    cpu_sub_socket.setblocking(False)  # set socket to non-blocking
 
     # 2. inis socket and timeout to send msg to mc_sub node
     mc_sub_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -82,8 +74,9 @@ def main():
     get_cpu_info_thread.start()
     send_mc_info_thread.start()
 
-    while True:
-        pass
+    get_cpu_info_thread.join()
+    send_mc_info_thread.join()
+
 
 if __name__ == "__main__":
     main()

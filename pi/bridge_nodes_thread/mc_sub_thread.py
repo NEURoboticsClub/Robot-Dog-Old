@@ -1,45 +1,25 @@
 import rospy
 from std_msgs.msg import String
 import socket
+import queue
 import threading
 import errno
 
-
 # global variable
 global mc_data
-mc_data = ""
-
+mc_data = queue.Queue() # change string to queue, thread safe
 
 def get_mc_info(sock):
     # init random id
     id = 1
-    single_json = []
     while True:
-
         try:
             # 1. get message and process
             raw_msg = sock.recv(MSG_SIZE)
             if raw_msg:
-
-                # 2. split msg by newline
-                messages = raw_msg.split("\n")
-                for single_line in messages:
-                    
-                    # 3. keep storing to buffer
-                    single_json.append(single_line)
-
-                    # 4. if this is the end, of a single json
-                    if single_line and single_line[-1] == "}":
-
-                        # join as string
-                        global mc_data
-                        mc_data = "".join(single_json)
-                        
-                        # ready for next json
-                        single_json = []
-
-                        # print("MC_SUB=Received from MC={}, id={}".format(mc_data, id))
-                        id+=1
+                global mc_data
+                mc_data.put(raw_msg.decode('utf-8'))
+                id+=1
             else:
                 print("no response")
                 break
@@ -52,13 +32,12 @@ def get_mc_info(sock):
                 print("broken pipe: {}".format(e))
 
 def publish_mc_topic():
-    
-    # publish messages at 50 Hz
-    rate = rospy.Rate(1500)
+    # publish messages at 40 Hz
+    rate = rospy.Rate(40)
     while not rospy.is_shutdown():
         msg = String()
         if mc_data:
-            msg.data = mc_data
+            msg.data = mc_data.get()
         else:
             msg.data = "no data yet"
         pub.publish(msg)
@@ -70,7 +49,7 @@ if __name__ == "__main__":
 
     # 1. init node
     rospy.init_node('mcsub_node')
-    pub = rospy.Publisher('mc_topic',String, queue_size=10)
+    pub = rospy.Publisher('mc_topic',String, queue_size=100)
 
     # 2. init server socket to listen to client req
     HOST = socket.gethostname()
@@ -84,6 +63,7 @@ if __name__ == "__main__":
 
     # 3. connect with new client (MC)
     client_socket, addr = MC_SUB_SERVER_SOCKET.accept()
+    # print("MC_SUB: Got a connection from {}, curr_host={}".format(str(addr), HOST))
 
     # start listening and logging in a separate thread
     listen_thread = threading.Thread(target=get_mc_info, args=(client_socket,))

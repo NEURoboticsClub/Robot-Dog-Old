@@ -3,19 +3,27 @@ import rospy
 from std_msgs.msg import String
 import socket
 import json
-
+import threading
+import queue
 # global variable
 client_socket = None
 global cpu_data
-cpu_data = ""
+cpu_data = queue.Queue()
 
 # Callback function when publisher publish something on this topic
 def callback(data):
     global client_socket, cpu_data
-    # rospy.loginfo("CPU_SUB: %s", data.data)
+    rospy.loginfo("CPU_SUB_THREAD: %s", data.data)
 
     # save latest data on this topic
-    cpu_data = data.data
+    cpu_data.put(data.data)
+
+def send_to_mc(sock):
+    # convert dict to json string
+    while True:
+        if not cpu_data.empty():
+            json_data = json.dumps({"data": cpu_data.get()})
+            sock.send(json_data.encode('utf-8'))
 
 
 if __name__ == "__main__":
@@ -33,16 +41,16 @@ if __name__ == "__main__":
     SERVER_SOCKET.bind((HOST, PORT))
     SERVER_SOCKET.listen(5)
 
+    # 3. connect with new client (MC)
+    client_socket, addr = SERVER_SOCKET.accept()
+    print("CPU_SUB=Got a connection from {}, curr_host={}".format(str(addr), HOST))
     
-    while not rospy.is_shutdown():
-        # 3. connect with new client (MC)
-        client_socket, addr = SERVER_SOCKET.accept()
-        print("Got a connection from {}, curr_host={}".format(str(addr), HOST))
+    client_thread = threading.Thread(target=send_to_mc, args=(client_socket,))
+    client_thread.start()
 
-        # 4.keep sending new messages
-        while True:  
-            # convert dict to json string
-            json_data = json.dumps({"data": cpu_data}) +"\n"
-            client_socket.send(json_data)
+    # 4.keep sending new messages
+    while True: 
+        pass
             
-    client_socket.close()
+            
+    # client_socket.close()
