@@ -13,14 +13,24 @@ MC_SUB_SERVER_PORT = 9998
 def get_cpu_info(sock):
     while True:
         try:
-            # 1. get message and process
+            # 0. get message and process
             raw_msg = sock.recv(MSG_SIZE)
             if not raw_msg:
                 break # exit the loop if no more data to read
 
-            # 2. get message and print
-            messages = raw_msg.decode()
-            print("MC: from CPU={}".format(messages))
+            # 1. test get message and print (string)
+            # msg = raw_msg.decode()
+            # print("MC: from CPU={}".format(msg))
+
+            # 2. test get actual data
+            msg = raw_msg.decode()
+            json_msg = json.loads(msg) # first deserialization
+            final_msg = json.loads(json_msg["data"]) # second deserialization
+            msg_id = final_msg["id"]
+            mc12 = final_msg["mc12"]
+            
+            print("MC: from CPU id={}, m_mc12={}".format(msg_id, mc12))
+
 
         except socket.timeout as e:
             print("Timeout occurred while waiting for response: {}".format(e))
