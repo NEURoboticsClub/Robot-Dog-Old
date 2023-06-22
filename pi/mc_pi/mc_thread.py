@@ -20,7 +20,7 @@ def get_cpu_info(sock):
 
             # 2. get message and print
             messages = raw_msg.decode()
-            print("MC: from CPU={}".format(messages, id))
+            print("MC: from CPU={}".format(messages))
 
         except socket.timeout as e:
             print("Timeout occurred while waiting for response: {}".format(e))
@@ -32,9 +32,11 @@ def get_cpu_info(sock):
 
 def send_mc_info(sock):
     id = 1
+    mcs12 = [[mcid, 1.1, 1.2, 1.3] for mcid in range(12)]
+
     while True:
         # 1. init and send data
-        data = {"data": "hello from mc", "id":id}
+        data = {"mc12": mcs12, "id":id}
         sock.send((json.dumps(data)).encode())
         id+=1
 
@@ -44,7 +46,7 @@ def send_mc_info(sock):
 def main():
     # 1. init socket and time out to listen to cpu_sub node
     cpu_sub_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    cpu_sub_socket.settimeout(10.0)
+    cpu_sub_socket.settimeout(2.0)
     # connect to server
     cpu_sub_socket.connect((SERVER_HOST, CPU_SUB_SERVER_PORT))
     cpu_sub_socket.setblocking(False)  # set socket to non-blocking

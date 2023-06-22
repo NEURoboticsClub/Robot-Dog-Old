@@ -1,12 +1,13 @@
 import rospy
 from std_msgs.msg import String
 import socket
+import queue
 import threading
 import errno
 
 # global variable
 global mc_data
-mc_data = ""
+mc_data = queue.Queue() # change string to queue, thread safe
 
 def get_mc_info(sock):
     # init random id
@@ -17,7 +18,7 @@ def get_mc_info(sock):
             raw_msg = sock.recv(MSG_SIZE)
             if raw_msg:
                 global mc_data
-                mc_data = raw_msg.decode('utf-8')
+                mc_data.put(raw_msg.decode('utf-8'))
                 id+=1
             else:
                 print("no response")
@@ -36,7 +37,7 @@ def publish_mc_topic():
     while not rospy.is_shutdown():
         msg = String()
         if mc_data:
-            msg.data = mc_data
+            msg.data = mc_data.get()
         else:
             msg.data = "no data yet"
         pub.publish(msg)
