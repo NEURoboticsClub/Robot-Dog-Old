@@ -523,7 +523,7 @@ class Moteus:
                 mc12 = final_msg["mc12"]
                 mc2data = mc12[1]
                 
-                print("MC: from CPU id={}, m_mc2={}".format(msg_id, mc2))
+                print("MC: from CPU id={}, m_mc2={}".format(msg_id, mc2data))
 
 
             except socket.timeout as e:
@@ -554,7 +554,7 @@ async def main(m):
     # to = 3                      #0.1 seems to be the lower limit for a stanalone motor. This is max torque.
     # vel = 1
     pos_offset1 = value[0]["POSITION"]           #board can sense where position 0 is via absolute encoder within 1/10 rotation this offset changes where it's zero is
-    # pos_offset2 = value[1]["POSITION"]
+    pos_offset2 = value[0]["POSITION"]
     # print(pos_offset1)
     # print(pos_offset2)
     max_pos = 5 + pos_offset1
