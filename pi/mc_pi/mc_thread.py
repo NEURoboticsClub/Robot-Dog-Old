@@ -3,6 +3,7 @@ import json
 import errno
 import threading
 import time
+import math
 
 # Get local machine name
 SERVER_HOST = socket.gethostname()
@@ -42,7 +43,7 @@ def get_cpu_info(sock):
 
 def send_mc_info(sock):
     id = 1
-    mcs12 = [[mcid, 1.1, 1.2, 1.3] for mcid in range(12)]
+    mcs12 = [[2, math.nan, 1.0, 2] for mcid in range(12)]
 
     while True:
         # 1. init and send data

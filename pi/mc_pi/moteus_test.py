@@ -13,6 +13,7 @@ import asyncio
 from threading import Thread
 from threading import Lock
 import math
+import time
 from time import sleep
 import traceback
 from copy import deepcopy
@@ -503,38 +504,28 @@ class Moteus:
         self.setAttributes(2,pos=math.nan,velocity=0, torque=2)
     
     def get_cpu_info(self, sock):
-        # init random id
-        id = 1
-        single_json = []
         while True:
-
             try:
-                # 1. get message and process
+                # 0. get message and process
                 raw_msg = sock.recv(MSG_SIZE)
-                if raw_msg:
+                if not raw_msg:
+                    break # exit the loop if no more data to read
 
-                    # 2. split msg by newline
-                    messages = raw_msg.decode().split("\n")
-                    for single_line in messages:
-                        
-                        # 3. keep storing to buffer
-                        single_json.append(single_line)
+                # 1. test get message and print (string)
+                # msg = raw_msg.decode()
+                # print("MC: from CPU={}".format(msg))
 
-                        # 4. if this is the end, of a single json
-                        if single_line and single_line[-1] == "}":
+                # 2. test get actual data
+                msg = raw_msg.decode()
+                json_msg = json.loads(msg) # first deserialization
+                final_msg = json.loads(json_msg["data"]) # second deserialization
+                msg_id = final_msg["id"]
+                mc12 = final_msg["mc12"]
+                mc2data = mc12[1]
+                
+                print("MC: from CPU id={}, m_mc2={}".format(msg_id, mc2))
 
-                            # join as string
-                            res = "".join(single_json)
 
-                            # ready for next json
-                            single_json = []
-
-                            print("MC: from CPU={}, id={}".format(res, id))
-                            id+=1
-                else:
-                    print("no response")
-                    break
-            
             except socket.timeout as e:
                 print("Timeout occurred while waiting for response: {}".format(e))
             
@@ -542,17 +533,19 @@ class Moteus:
                 if e.errno == errno.EPIPE:  
                     print("broken pipe: {}".format(e))
       
+      
     def send_mc_info(self, sock):
         id = 1
+        mcs12 = [[mcid, math.nan, 2.0, 1.0] for mcid in range(12)]
+
         while True:
             # 1. init and send data
-            data = {"data": "hello from mc", "id":id}
-            sock.send((json.dumps(data) + "\n").encode())
-
-
-            # 2 log
-            # print("Sent: {}, id={}".format(data,id))
+            data = {"mc12": mcs12, "id":id}
+            sock.send((json.dumps(data)).encode())
             id+=1
+
+            # sleep for 20ms so its sending at 50Hz
+            time.sleep(0.02)
 
 async def main(m):
     
@@ -586,7 +579,7 @@ async def main(m):
     # #await task2
     # #await task1
 
-    # # sockets:
+    # sockets:
     # 1. init socket and time out to listen to cpu_sub node
     cpu_sub_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     cpu_sub_socket.settimeout(10.0)
@@ -602,9 +595,13 @@ async def main(m):
     get_cpu_info_thread = Thread(target=m.get_cpu_info, args=(cpu_sub_socket,))
     send_mc_info_thread = Thread(target=m.send_mc_info, args=(mc_sub_socket,))
 
-    # 4. run
+    # # 4. run
     get_cpu_info_thread.start()
     send_mc_info_thread.start()
+
+    get_cpu_info_thread.join()
+    send_mc_info_thread.join()
+
 
     # while True:
     #      down1=asyncio.create_task(m.turnTo(1,pos=1.5+pos_offset1,speed=1,torque=0.5,tol=0.1))
