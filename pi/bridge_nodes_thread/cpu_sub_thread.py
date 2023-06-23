@@ -13,17 +13,17 @@ cpu_data = queue.Queue()
 # Callback function when publisher publish something on this topic
 def callback(data):
     global client_socket, cpu_data
-    rospy.loginfo("CPU_SUB_THREAD: %s", data.data)
+    # rospy.loginfo("CPU_SUB_THREAD: %s", data.data)
 
-    # save latest data on this topic
+    # save latest json data on this topic
     cpu_data.put(data.data)
 
 def send_to_mc(sock):
-    # convert dict to json string
     while True:
         if not cpu_data.empty():
-            json_data = json.dumps({"data": cpu_data.get()})
-            sock.send(json_data.encode('utf-8'))
+            json_data = cpu_data.get()
+            bytes_data = json_data.encode('utf-8')  # Convert the JSON string to bytes
+            sock.send(bytes_data)
 
 
 if __name__ == "__main__":
