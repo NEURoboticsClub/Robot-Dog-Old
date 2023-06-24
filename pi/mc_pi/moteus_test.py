@@ -507,30 +507,33 @@ class Moteus:
         while True:
             try:
                 # 0. get message and process
-                bytes_msg = sock.recv(MSG_SIZE)
-                print("bytes_msg type=",type(bytes_msg))
+                raw_msg = sock.recv(MSG_SIZE)
+                if not raw_msg:
+                    break # exit the loop if no more data to read
 
-                # 1. exit the loop if no more data to read
-                if not bytes_msg:
-                    break 
+                # 1. test get message and print (string)
+                # msg = raw_msg.decode()
+                # print("MC: from CPU={}".format(msg))
 
-                # 2. convert to json string, then to objt
-                json_msg = json.loads(bytes_msg)
-                msg_id = json_msg["id"]
-                mc12 = json_msg["mc12"]
+                # 2. test get actual data
+                msg = raw_msg.decode()
+                json_msg = json.loads(msg) # first deserialization
+                final_msg = json.loads(json_msg["data"]) # second deserialization
+                msg_id = final_msg["id"]
+
+                # TODO: make mc12 global, need some flag so we know its not empty
+                
+                mc12 = final_msg["mc12"]
 
                 # 3. get data for 2nd motor (1st index)
                 mc2data = mc12[1]
-
-                # 4. print
+                # pos, vel , tor
                 print("MC: from CPU id={}, m_mc2={}".format(msg_id, mc2data))
 
-                # 5. set attributes for MC2
+                # 4. set attributes
                 m.setAttributes(mc2data[0], pos=mc2data[1], velocity = mc2data[2], torque=mc2data[3])
+    
 
-            except json.JSONDecodeError:
-                print("Error: Invalid JSON data received. Reconnecting...")
-                
             except socket.timeout as e:
                 print("Timeout occurred while waiting for response: {}".format(e))
             
@@ -541,6 +544,8 @@ class Moteus:
       
     def send_mc_info(self, sock):
         id = 1
+
+        # TODO: if 
         mcs12 = [[mcid, math.nan, 2.0, 1.0] for mcid in range(1, 13)]
 
         while True:
