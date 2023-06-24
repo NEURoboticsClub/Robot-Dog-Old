@@ -1,0 +1,24 @@
+base: Body
+left_front:
+  - FL_1
+  - FL_2
+  - FL_3
+  - FL_F
+
+right_front:
+  - FR_1
+  - FR_2
+  - FR_3
+  - FR_F
+
+left_hind:
+  - BL_1
+  - BL_2
+  - BL_3
+  - BL_F
+
+right_hind:
+  - BR_1
+  - BR_2
+  - BR_3
+  - BR_F

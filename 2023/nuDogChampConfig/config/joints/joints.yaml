@@ -1,0 +1,23 @@
+left_front:
+  - FL_Ad
+  - FL_Hip
+  - FL_Knee
+  - FL_Ank
+
+right_front:
+  - FR_Ad
+  - FR_Hip
+  - FR_Knee
+  - FR_Ank
+
+left_hind:
+  - BL_Ad
+  - BL_Hip
+  - BL_Knee
+  - BL_Ank
+
+right_hind:
+  - BR_Ad
+  - BR_Hip
+  - BR_Knee
+  - BR_Ank
