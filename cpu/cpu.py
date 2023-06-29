@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import rospy
 import json
+import math
 import queue
 from std_msgs.msg import String
 from datetime import datetime
@@ -34,25 +35,29 @@ if __name__ == "__main__":
     # publish and increment id at each publish
     msg_id = 1
     while not rospy.is_shutdown():
-        # 1. test publish string
-        # pub.publish("hello from cpu id=" + str(msg_id))
-        # msg_id += 1
 
-        # 2. publish actual data
-        if not mc_data.empty():
+        mc12_publish = None
+
+        # 1. if we have no previous mcs data
+        if mc_data.empty():
+            # create new command for the 12 mcs
+            mcs12 = [[mcid, math.nan, 2.0, 1.0] for mcid in range(1, 13)]
+        
+        # 2. use the previous data
+        else:
             
-            # 1. pop the latest data
-            ms12_modified = mc_data.get()
+            # - pop the latest data
+            mc12_publish = mc_data.get()
 
-            # 2. fake modify
-            ms12_modified = [ [mc_id, pos, vel, tor] for mc_id, pos,vel, tor in ms12_modified]
+            # - fake modify
+            mc12_publish = [ [mc_id, pos, vel, tor] for mc_id, pos,vel, tor in mc12_publish]
 
-            # 3. jsonify and publish
-            json_tosend = json.dumps({"id":msg_id, "mc12": ms12_modified})
-            pub.publish(json_tosend)
+        # 3. jsonify and publish
+        json_tosend = json.dumps({"id":msg_id, "mc12": mc12_publish})
+        pub.publish(json_tosend)
 
-            # test publish string
-            msg_id+=1
+        # 4. incr id
+        msg_id+=1
 
         #  ensure a consistent loop frequency
         rate.sleep()
