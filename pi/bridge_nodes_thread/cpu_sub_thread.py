@@ -13,7 +13,7 @@ cpu_data = queue.Queue()
 # Callback function when publisher publish something on this topic
 def callback(data):
     global client_socket, cpu_data
-    rospy.loginfo("CPU_SUB_THREAD: %s", data.data)
+    # rospy.loginfo("CPU_SUB_THREAD: %s", data.data)
 
     # save latest json data on this topic
     cpu_data.put(data.data)

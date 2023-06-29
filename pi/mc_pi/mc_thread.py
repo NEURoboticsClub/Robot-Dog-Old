@@ -14,7 +14,6 @@ CPU_SUB_SERVER_PORT = 9999
 MC_SUB_SERVER_PORT = 9998
 
 def get_cpu_info(sock):
-
     while True:
         try:
             # 0. get message and process
@@ -24,14 +23,16 @@ def get_cpu_info(sock):
             if not bytes_msg:
                 continue
 
-            # 2. convert to json string, then to objt
+            # 2. cconvert to json object and get the id and mc12 data
             json_msg = json.loads(bytes_msg)
             msg_id = json_msg["id"]
             mc12 = json_msg["mc12"]
+            
 
             # 3. skip if not data received yet
             if not mc12:
                 continue
+            # cpu_data.put(mc12)
             
             # 4. get data for 2nd motor (1st index)
             mc2data = mc12[1]
@@ -41,6 +42,7 @@ def get_cpu_info(sock):
 
             # 6. set attributes
             # m.setAttributes(mc2data[0], pos=mc2data[1], velocity = mc2data[2], torque=mc2data[3])
+        
         except KeyError:
                 print("Error: 'id' or 'mc12' key not found in JSON data")
         except json.JSONDecodeError:

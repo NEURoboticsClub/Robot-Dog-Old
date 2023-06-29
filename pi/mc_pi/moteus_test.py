@@ -518,7 +518,7 @@ class Moteus:
                 if not bytes_msg:
                     continue
 
-                # 2. convert to json string, then to objt
+                # 2. convert to json object and get the id and mc12 data
                 json_msg = json.loads(bytes_msg)
                 msg_id = json_msg["id"]
                 mc12 = json_msg["mc12"]
@@ -556,14 +556,14 @@ class Moteus:
             # in moteus this will be from getParsedResult()
             mcs12 = [[mcid, math.nan, 2.0, 1.0] for mcid in range(1, 13)]
             
-            # 1. create a dict
+            # 2. create a dict
             data = {"mc12": mcs12, "id":id}
 
-            # 2. send as bytes encoded json
+            # 3. send as bytes encoded json
             sock.send((json.dumps(data)).encode())
             id+=1
 
-            # 3. sleep for 20ms so its sending at 50Hz
+            # 4. sleep for 20ms so its sending at 50Hz
             time.sleep(0.02)
 
 

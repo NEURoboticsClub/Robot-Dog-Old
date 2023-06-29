@@ -15,10 +15,10 @@ def get_mc_info(sock):
     while True:
         try:
             # 1. get message and process
-            raw_msg = sock.recv(MSG_SIZE)
-            if raw_msg:
+            byte_msg = sock.recv(MSG_SIZE)
+            if byte_msg:
                 global mc_data
-                mc_data.put(raw_msg.decode('utf-8'))
+                mc_data.put(byte_msg.decode('utf-8'))
                 id+=1
             else:
                 print("no response")
@@ -38,6 +38,7 @@ def publish_mc_topic():
         msg = String()
         if mc_data:
             msg.data = mc_data.get()
+            # print(f"MC_SUB: publish {msg.data}")
         else:
             msg.data = "no data yet"
         pub.publish(msg)
