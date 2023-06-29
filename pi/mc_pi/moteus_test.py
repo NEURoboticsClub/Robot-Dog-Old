@@ -504,11 +504,15 @@ class Moteus:
         self.setAttributes(2,pos=math.nan,velocity=0, torque=2)
     
     def get_cpu_info(self, sock, m):
+        """
+        Receive cpu message from bridge nodes using tcp socket
+        and use the data to set attributes to the 12 motor controllers
+        and save the data to cpu_info queue
+        """
         while True:
             try:
                 # 0. get message and process
                 bytes_msg = sock.recv(MSG_SIZE)
-                print("bytes_msg type=",type(bytes_msg))
 
                 # 1. exit the loop if no more data to read
                 if not bytes_msg:
@@ -519,13 +523,17 @@ class Moteus:
                 msg_id = json_msg["id"]
                 mc12 = json_msg["mc12"]
 
-                # 3. get data for 2nd motor (1st index)
+                # 3. skip if not data received yet
+                if not mc12:
+                    continue
+
+                # 4. get data for 2nd motor (1st index)
                 mc2data = mc12[1]
 
-                # 4. print
+                # 5. print
                 print("MC: from CPU id={}, m_mc2={}".format(msg_id, mc2data))
 
-                # 5. set attributes for MC2
+                # 6. set attributes for MC2
                 m.setAttributes(mc2data[0], pos=mc2data[1], velocity = mc2data[2], torque=mc2data[3])
 
             except json.JSONDecodeError:
@@ -541,16 +549,21 @@ class Moteus:
       
     def send_mc_info(self, sock):
         id = 1
-        mcs12 = [[mcid, math.nan, 2.0, 1.0] for mcid in range(1, 13)]
-
         while True:
-            # 1. init and send data
+            # 1. create fake data for 12 MC
+            # in moteus this will be from getParsedResult()
+            mcs12 = [[mcid, math.nan, 2.0, 1.0] for mcid in range(1, 13)]
+            
+            # 1. create a dict
             data = {"mc12": mcs12, "id":id}
+
+            # 2. send as bytes encoded json
             sock.send((json.dumps(data)).encode())
             id+=1
 
-            # sleep for 20ms so its sending at 50Hz
+            # 3. sleep for 20ms so its sending at 50Hz
             time.sleep(0.02)
+
 
 async def main(m):
     
