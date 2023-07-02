@@ -2,26 +2,26 @@
      <img src="https://avatars.githubusercontent.com/u/115505515?s=400&u=88634494b2fd8d86a015d1fa312a77a39ff46cd8&v=4" width="200" style="border-radius:50%"/>
 
 # NU-Dog 🐕
-Offical Repo for the Northeastern University Robotics Club's Robot Dog.
+Offical Repository for the Northeastern University Robotics Club's Robot Dog.
 
 This repository consists of all the software (legacy + latest) development. You are welcome to contribute to this repository.
 ## Repository Structure
 
-1) 2023: Includes all the latest development towards NU-Dog, including software, relevant documentation and directions to replicate all the work with Astra camera, Gazebo, etc.
+1) 2023: Includes all latest development towards NU-Dog, including software, relevant documentation and directions to replicate all the work with Astra camera, Gazebo, etc.
 
-2) 2021-2022: Legacy development stuff, needs documentation. Although outdated, This directory should not be deleted as previous work is still relevant.
+2) 2021-2022: Legacy development. Although outdated, This directory should not be deleted as previous work is still relevant.
 
 3) simulation: Attempt on single foot Gazebo simulation.
 
 ## Software Tools 💻
-1) ROS v1 Noetic
-2) Gazebo simulator
-3) Moteus controller
-4) Champ (based on MIT Cheetah)
+1) [ROS Noetic](http://wiki.ros.org/noetic)
+2) [Gazebo](https://gazebosim.org/home)
+3) [mjBots Moteus controller](https://github.com/mjbots/moteus)
+4) [Champ](https://github.com/chvmp/champ) (based on MIT Cheetah)
 
 ## Hardware Tools 🔧
-1) AstraPro Depth camera for RGB + Depth
-2) OS0 camera for LiDAR
+1) [AstraPro Plus](https://shop.orbbec3d.com/Astra-Pro-Plus) RGB+Depth camera
+2) [Ouster OS0](https://ouster.com/products/scanning-lidar/os0-sensor/) LiDAR
 
 ## Steps to Contribute 🤝
 
