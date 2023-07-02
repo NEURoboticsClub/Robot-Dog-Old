@@ -1,5 +1,5 @@
 <p align="center">
-     <img src="src/static/img/nu_robotics_logo.jpg" width="200" style="border-radius:50%"/>
+     <img src="[src/static/img/nu_robotics_logo.jpg]" width="200" style="border-radius:50%"/>
 
 # NU-Dog 🐕
 Offical Repo for the Northeastern University Robotics Club's Robot Dog.
