@@ -41,7 +41,7 @@ if __name__ == "__main__":
         # 1. if we have no previous mcs data
         if mc_data.empty():
             # create new command for the 12 mcs
-            mcs12 = [[mcid, math.nan, 2.0, 1.0] for mcid in range(1, 13)]
+            mc12 = [[mcid, math.nan, 2.0, 1.0] for mcid in range(1, 13)]
         
         # 2. use the previous data
         else:

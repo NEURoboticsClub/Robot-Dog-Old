@@ -13,6 +13,23 @@ MSG_SIZE = 1024
 CPU_SUB_SERVER_PORT = 9999
 MC_SUB_SERVER_PORT = 9998
 
+def get_parsed_results():
+        parsed = []
+        
+        for _ in range(12):
+            parsed.append(
+                {
+                    "MODE" : 3,
+                    "POSITION" : 3.0,
+                    "VELOCITY" : 3.0,
+                    "TORQUE" : 3.0,
+                    "VOLTAGE": 3.0,
+                    "TEMPERATURE" : 3.0,
+                    "FAULT" : 3.0
+                }
+            )
+        return parsed
+
 def get_cpu_info(sock):
     while True:
         try:
@@ -61,9 +78,10 @@ def send_mc_info(sock):
         
     id = 1
     while True:
-        # 1. create fake data for 12 MC
-        # in moteus this will be from getParsedResult()
-        mcs12 = [[mcid, math.nan, 2.0, 1.0] for mcid in range(1, 13)]
+        # 0. get data from the 12 controllers
+        parsedRes = get_parsed_results()
+        mcs12 = [[idmin1+1, math.nan, parsed["VELOCITY"], parsed["TORQUE"] ] for idmin1, parsed in enumerate(parsedRes)]
+        # mcs12 = [[mcid, math.nan, 2.0, 1.0] for mcid in range(1, 13)]
         
         # 1. create a dict
         data = {"mc12": mcs12, "id":id}

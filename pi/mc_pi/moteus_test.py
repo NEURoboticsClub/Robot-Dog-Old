@@ -552,10 +552,13 @@ class Moteus:
     def send_mc_info(self, sock):
         id = 1
         while True:
-            # 1. create fake data for 12 MC
-            # in moteus this will be from getParsedResult()
-            mcs12 = [[mcid, math.nan, 2.0, 1.0] for mcid in range(1, 13)]
+            # 1. get data from the 12 controllers
+            parsedRes = self.getParsedResults()
+            mcs12 = [[idmin1+1, math.nan, parsed["VELOCITY"], parsed["TORQUE"] ] for idmin1, parsed in enumerate(parsedRes)]
             
+            # - test fake data
+            # mcs12 = [[mcid, math.nan, 2.0, 1.0] for mcid in range(1, 13)]
+
             # 2. create a dict
             data = {"mc12": mcs12, "id":id}
 
