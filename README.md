@@ -1,5 +1,5 @@
 # ros-docker
-## INTRO: 
+## INTRODUCTION: 
 This repo contain a communication framework that will a part of robot dog project in this repo:  
 https://github.com/NEURoboticsClub/NU-Dog/tree/main  
 
