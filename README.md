@@ -1,4 +1,9 @@
 # ros-docker
+## INTRO: 
+<img width="1157" alt="Screenshot 2023-07-13 at 2 42 40 PM" src="https://github.com/freecode23/ros-docker/assets/67333705/8d88c263-55ef-4767-9753-e63fb5ea1e48"> 
+
+
+
 
 ## PREREQUSITES:  
 1. Docker and docker compose installed in your machine and PI  
