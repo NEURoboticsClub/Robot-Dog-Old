@@ -35,7 +35,10 @@ COPY ./catkin_ws/src ./src
 # It also adds various ROS tools to your PATH.
 RUN /bin/bash -c '. /opt/ros/melodic/setup.bash; cd /app; catkin_make -DPYTHON_EXECUTABLE=/usr/bin/python3'
 
-# 5. This command sources the setup script for your catkin workspace.
-# It sets up the environment variables for the packages in your catkin workspace. For example, it modifies ROS_PACKAGE_PATH to include the packages in your workspace,
+# 5. This command sources the setup script for your catkin workspace, it will be overriden by 
+# command in docker-compose file
+# 5.1 "source /app/devel/setup.bash
+# This sets up the environment variables for the packages in your catkin workspace.
+# For example, it modifies ROS_PACKAGE_PATH to include the packages in your workspace,
 # and it adds any executables in your workspace to your PATH.
-CMD ["bash", "-c", "source /app/devel/setup.bash && rosrun cpu cpu.py"]
+CMD ["bash", "-c", "source /app/devel/setup.bash && roslaunch cpu cpu_launch.launch"]

@@ -1,29 +1,22 @@
 version: '3.7'
 services:
-  # ros-master:
-  #   image: ros:melodic-ros-core
-  #   command: roscore
-  #   # forgo the network isolation between container and host
-  #   # will make network.gethostname() use the address of raspberry pi not container
-  #   network_mode: host 
   cpu-node:
     build:
       context: .
       dockerfile: Dockerfile
-    # maps the src directory in your workspace to the src directory in the container,
+    # 'volumes'maps the src directory in your workspace to the src directory in the container,
     # so that changes to your local files are reflected in the container.
     volumes:
       - ./catkin_ws/src:/app/src
     environment:
       - "ROS_MASTER_URI=http://10.42.0.1:11311"
-      - "ROS_IP=10.42.0.1" # to communicate between node
-    # will override CMD in dockerfile
+      # this is the ip of cpu_node. we need this to communicate with nodes in other container
+      - "ROS_IP=10.42.0.1" 
+
+    # This will override command written in CMD in Dockerfile
     # ros launch will run ros master. so we dont need to make a ros master in another container
     command: bash -c "source /app/devel/setup.bash && roslaunch cpu cpu_launch.launch"
-
-    # command: bash -c "source /app/devel/setup.bash && rosrun cpu cpu.py"
-    # depends_on:
-    #   - ros-master
     network_mode: host
-    # allow python to print to output immediately
+
+    # Allow python to print to output immediately
     tty: true 
