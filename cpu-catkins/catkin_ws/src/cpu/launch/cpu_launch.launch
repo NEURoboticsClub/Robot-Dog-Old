@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="cpu" type="cpu.py" name="cpu_node" output="screen"/>
+</launch>
