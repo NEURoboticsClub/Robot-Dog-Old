@@ -6,7 +6,9 @@ services:
       context: ./bridge_nodes_thread
       dockerfile: Dockerfile
     environment:
+      # the ip of ros master
       - "ROS_MASTER_URI=http://10.42.0.1:11311"
+      # the ip of this container
       - "ROS_IP=10.42.0.215"
     command: bash -c "source /opt/ros/melodic/setup.bash && ./run.sh"
     network_mode: host
