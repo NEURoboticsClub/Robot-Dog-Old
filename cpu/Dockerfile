@@ -1,4 +1,4 @@
-# Dockerfile for cpu node
+# Dockerfile_test_node
 FROM ros:melodic
 
 WORKDIR /app
