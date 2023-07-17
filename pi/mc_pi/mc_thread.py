@@ -15,17 +15,17 @@ MC_SUB_SERVER_PORT = 9998
 
 def get_parsed_results():
         parsed = []
-        
-        for _ in range(12):
+        totalConnectedMotors = 1
+        for _ in range(totalConnectedMotors):
             parsed.append(
                 {
                     "MODE" : 3,
-                    "POSITION" : 3.0,
-                    "VELOCITY" : 3.0,
-                    "TORQUE" : 3.0,
-                    "VOLTAGE": 3.0,
-                    "TEMPERATURE" : 3.0,
-                    "FAULT" : 3.0
+                    "POSITION" : 1.0,
+                    "VELOCITY" : 1.0,
+                    "TORQUE" : 1.0,
+                    "VOLTAGE": 1.0,
+                    "TEMPERATURE" : 1.0,
+                    "FAULT" : 1.0
                 }
             )
         return parsed
@@ -51,8 +51,8 @@ def get_cpu_info(sock):
                 continue
             # cpu_data.put(mc12)
             
-            # 4. get data for 2nd motor (1st index)
-            mc2data = mc12[1]
+            # 4. get data for 2nd motor (0th index, since theres only 1 motor connected
+            mc2data = mc12[0]
 
             # 5. log
             print("MC: from CPU id={}, m_mc2={}".format(msg_id, mc2data))
@@ -79,9 +79,12 @@ def send_mc_info(sock):
     id = 1
     while True:
         # 0. get data from the 12 controllers
+        # if connected to 1 motor, there's only 1 element
         parsedRes = get_parsed_results()
-        mcs12 = [[idmin1+1, math.nan, parsed["VELOCITY"], parsed["TORQUE"] ] for idmin1, parsed in enumerate(parsedRes)]
-        # mcs12 = [[mcid, math.nan, 2.0, 1.0] for mcid in range(1, 13)]
+
+        # - hard code motor id= 2
+        motorId = 2
+        mcs12 = [[motorId, math.nan, parsed["VELOCITY"], parsed["TORQUE"] ] for parsed in parsedRes]
         
         # 1. create a dict
         data = {"mc12": mcs12, "id":id}

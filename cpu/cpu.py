@@ -20,7 +20,7 @@ def callback(data):
 
     # 2. print data and msg_id
     print("CPU_NODE: id={}, from MC={}".format(msg_id, mc12))
-
+    # CPU_NODE: id=413, from MC=[[1, nan, -0.010213678702712059, 0.00903321709483862]]
     # 3. save it to global variable
     mc_data.put(mc12)
 
@@ -49,9 +49,10 @@ if __name__ == "__main__":
             # - pop the latest data
             mc12_publish = mc_data.get()
 
-            # - fake modify
-            mc12_publish = [ [mc_id, pos, vel, tor] for mc_id, pos,vel, tor in mc12_publish]
-
+            # - hard code id 2 only
+            # mc12_publish = [ [2, pos, vel, tor] for mc_id, pos,vel, tor in mc12_publish]
+            mc12_publish= [[2, math.nan, 3.0, 3.0]]
+            
         # 3. jsonify and publish
         json_tosend = json.dumps({"id":msg_id, "mc12": mc12_publish})
         pub.publish(json_tosend)

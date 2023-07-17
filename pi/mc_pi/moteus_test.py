@@ -527,8 +527,10 @@ class Moteus:
                 if not mc12:
                     continue
                 
-                # 4. get data for 2nd motor (1st index)
-                mc2data = mc12[1]
+                # 4. get data for 2nd motor (index = 1, if there are 12 motors)
+                # but if we are only testing 1 motor then its just index = 0
+                motorIdx = 0
+                mc2data = mc12[motorIdx]
 
                 # 5. log
                 print("MC: from CPU id={}, m_mc2={}".format(msg_id, mc2data))
@@ -552,12 +554,11 @@ class Moteus:
     def send_mc_info(self, sock):
         id = 1
         while True:
-            # 1. get data from the 12 controllers
+            # 1. get data from the 12 controllers.
+            # if we are only connected to 1 motor, then theres only 1 info
             parsedRes = self.getParsedResults()
-            mcs12 = [[idmin1+1, math.nan, parsed["VELOCITY"], parsed["TORQUE"] ] for idmin1, parsed in enumerate(parsedRes)]
-            
-            # - test fake data
-            # mcs12 = [[mcid, math.nan, 2.0, 1.0] for mcid in range(1, 13)]
+            motorID = 2
+            mcs12 = [[motorID, math.nan, parsed["VELOCITY"], parsed["TORQUE"] ] for parsed in parsedRes]
 
             # 2. create a dict
             data = {"mc12": mcs12, "id":id}
