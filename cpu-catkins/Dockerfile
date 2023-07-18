@@ -18,7 +18,8 @@ RUN apt-get update && \
 
 # 3. Install catkin and other dependencies
 RUN apt-get install -y ros-melodic-ecl-core && rosdep update
-
+RUN apt-get install -y ros-melodic-yocs-velocity-smoother
+RUN apt-get install -y ros-melodic-robot-localization
 RUN pip3 install defusedxml
 RUN pip3 install netifaces
 RUN pip3 install catkin_pkg
@@ -47,4 +48,4 @@ RUN /bin/bash -c '. /opt/ros/melodic/setup.bash; cd /app; catkin_make clean; cat
 # This sets up the environment variables for the packages in your catkin workspace.
 # For example, it modifies ROS_PACKAGE_PATH to include the packages in your workspace,
 # and it adds any executables in your workspace to your PATH.
-CMD ["bash", "-c", "source /app/devel/setup.bash && roslaunch cpu cpu_launch.launch"]
+CMD ["bash", "-c", "source /app/devel/setup.bash && roslaunch cpu cpu_launch.launch && roslaunch champ_config bringup.launch rviz:=true && roslaunch champ_teleop teleop.launch"]

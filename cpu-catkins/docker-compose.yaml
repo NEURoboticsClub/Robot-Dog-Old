@@ -15,7 +15,7 @@ services:
 
     # This will override command written in CMD in Dockerfile
     # ros launch will run ros master. so we dont need to make a ros master in another container
-    command: bash -c "source /app/devel/setup.bash && roslaunch cpu cpu_launch.launch"
+    command: bash -c "source /app/devel/setup.bash && roslaunch champ_config bringup.launch rviz:=true && roslaunch champ_teleop teleop.launch"
     network_mode: host
 
     # Allow python to print to output immediately
