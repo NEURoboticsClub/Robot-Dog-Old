@@ -1,6 +1,6 @@
 <launch>
   <include file="$(find cpu)/launch/cpu_launch.launch"/>
-  <include file="$(find champ_bringup)/launch/bringup.launch">
+  <include file="$(find champ_config)/launch/bringup.launch">
     <!-- <arg name="rviz" value="true"/> -->
   </include>
   <!-- <include file="$(find champ_teleop)/launch/teleop.launch"/> -->
