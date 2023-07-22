@@ -1,0 +1,60 @@
+# Dockerfile for using python3
+FROM ros:melodic
+
+WORKDIR /app
+ENV ROS_PYTHON_VERSION=3
+
+# 2. RUN
+# ros and rosdep
+RUN apt-get update && \
+    # 2.1 Install python3-rospkg and to remove ROS packages (already installed).
+    # Select Yes for that prompt. This will remove ROS packages and we will have to re-install them.
+    apt-get install -y python3-all-dev python3-rospkg python3-pip && \
+
+    # 2.2 Complete installation and rosdep
+    apt-get install -y ros-melodic-desktop-full --fix-missing && \
+    apt-get install -y ros-melodic-rostopic && \
+    apt-get install python-rosdep && \
+    rosdep update
+
+# 3. Install catkin and other dependencies
+RUN apt-get install -y ros-melodic-ecl-core && rosdep update
+RUN apt-get install -y ros-melodic-yocs-velocity-smoother
+RUN apt-get install -y ros-melodic-robot-localization
+RUN pip3 install defusedxml
+RUN pip3 install netifaces
+RUN pip3 install catkin_pkg
+RUN pip3 install empy
+
+# 4. Ensure that Python 3 is used
+RUN ln -sf /usr/bin/python3 /usr/bin/python
+
+# 5. Copy your src/ directory into the container
+# should not copy the build/, devel/, or install/ directories from your host machine to your Docker container.
+# These directories are generated when you build your Catkin workspace,
+# and their contents are specific to the system where you did the build.
+COPY ./catkin_ws/src ./src
+
+# 6. Copy the run script and make the executable
+COPY ./run.sh ./run.sh
+RUN chmod +x ./run.sh
+
+# 7. CHAMP requirement
+RUN rosdep install --from-paths src --ignore-src -r -y
+
+
+# 8. Run catkin_make to build your workspace
+# - /opt/ros/melodic/setup.bash
+# This command sources the setup script for the ROS environment.
+# This script sets a number of environment variables that ROS uses,
+# such as ROS_ROOT, ROS_PACKAGE_PATH, and ROS_MASTER_URI, among others.
+# It also adds various ROS tools to your PATH.
+RUN /bin/bash -c '. /opt/ros/melodic/setup.bash; cd /app; catkin_make clean; catkin_make -DPYTHON_EXECUTABLE=/usr/bin/python3'
+
+# 9. This command sources the setup script for your catkin workspace
+# - This will be overriden by command in docker-compose file if you build the container using compose
+# - source /app/devel/setup.bash
+# This sets up the environment variables for the packages in your catkin workspace.
+# For example, it modifies ROS_PACKAGE_PATH to include the packages in your workspace,
+# and it adds any executables in your workspace to your PATH.
+CMD ["bash", "-c", "source /app/devel/setup.bash && roslaunch cpu all.launch"]

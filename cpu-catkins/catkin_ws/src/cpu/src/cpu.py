@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 import rospy
 import json
 import math
-import queue
+import Queue as queue
 from std_msgs.msg import String
 from datetime import datetime
 
@@ -20,7 +20,7 @@ def callback(data):
 
     # 2. print data and msg_id
     print("CPU_NODE: id={}, from MC={}".format(msg_id, mc12))
-    # CPU_NODE: id=413, from MC=[[1, nan, -0.010213678702712059, 0.00903321709483862]]
+    # CPU_NODE: id=413, from MC=[[1,  float('nan'), -0.010213678702712059, 0.00903321709483862]]
     # 3. save it to global variable
     mc_data.put(mc12)
 
@@ -41,7 +41,7 @@ if __name__ == "__main__":
         # 1. if we have no previous mcs data
         if mc_data.empty():
             # create new command for the 12 mcs
-            mc12 = [[mcid, math.nan, 2.0, 1.0] for mcid in range(1, 13)]
+            mc12 = [[mcid, float('nan'), 2.0, 1.0] for mcid in range(1, 13)]
         
         # 2. use the previous data
         else:
