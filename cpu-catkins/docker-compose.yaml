@@ -10,12 +10,15 @@ services:
       - ./catkin_ws/src:/app/src
     environment:
       - "ROS_MASTER_URI=http://10.42.0.1:11311"
-      # this is the ip of cpu_node. we need this to communicate with nodes in other container
-      - "ROS_IP=10.42.0.1" 
+      # This is the ip of cpu_node. we need this to communicate with nodes in other container
+      - "ROS_IP=10.42.0.1"
+      - "ROS_PACKAGE_PATH=/app/src"
+
 
     # This will override command written in CMD in Dockerfile
-    # ros launch will run ros master. so we dont need to make a ros master in another container
-    command: bash -c "source /app/devel/setup.bash && roslaunch champ_config bringup.launch rviz:=true && roslaunch champ_teleop teleop.launch"
+    # - ROS launch will run a single ros master and the other nodes stated in all_launch file
+    # - We dont need to make a ros master in another container    
+    command:  bash -c "source /app/devel/setup.bash && roslaunch cpu all_launch.launch"
     network_mode: host
 
     # Allow python to print to output immediately

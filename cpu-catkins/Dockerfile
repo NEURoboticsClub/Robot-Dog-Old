@@ -29,23 +29,31 @@ RUN pip3 install empy
 RUN ln -sf /usr/bin/python3 /usr/bin/python
 
 # 5. Copy your src/ directory into the container
-# should not copy the build/, devel/, or install/ directories from your host machine to your Docker container. These directories are generated when you build your Catkin workspace, and their contents are specific to the system where you did the build.
+# should not copy the build/, devel/, or install/ directories from your host machine to your Docker container.
+# These directories are generated when you build your Catkin workspace,
+# and their contents are specific to the system where you did the build.
 COPY ./catkin_ws/src ./src
 
-# 6. CHAMP requirement
+# 6. Copy the run script and make the executable
+COPY ./run.sh ./run.sh
+RUN chmod +x ./run.sh
+
+# 7. CHAMP requirement
 RUN rosdep install --from-paths src --ignore-src -r -y
 
 
-# 7. Run catkin_make to build your workspace
+# 8. Run catkin_make to build your workspace
+# - /opt/ros/melodic/setup.bash
 # This command sources the setup script for the ROS environment.
-# This script sets a number of environment variables that ROS uses, such as ROS_ROOT, ROS_PACKAGE_PATH, and ROS_MASTER_URI, among others.
+# This script sets a number of environment variables that ROS uses,
+# such as ROS_ROOT, ROS_PACKAGE_PATH, and ROS_MASTER_URI, among others.
 # It also adds various ROS tools to your PATH.
 RUN /bin/bash -c '. /opt/ros/melodic/setup.bash; cd /app; catkin_make clean; catkin_make -DPYTHON_EXECUTABLE=/usr/bin/python3'
 
-# 5. This command sources the setup script for your catkin workspace, it will be overriden by 
-# command in docker-compose file
-# 5.1 "source /app/devel/setup.bash
+# 9. This command sources the setup script for your catkin workspace
+# - This will be overriden by command in docker-compose file if you build the container using compose
+# - source /app/devel/setup.bash
 # This sets up the environment variables for the packages in your catkin workspace.
 # For example, it modifies ROS_PACKAGE_PATH to include the packages in your workspace,
 # and it adds any executables in your workspace to your PATH.
-CMD ["bash", "-c", "source /app/devel/setup.bash && roslaunch cpu cpu_launch.launch && roslaunch champ_config bringup.launch rviz:=true && roslaunch champ_teleop teleop.launch"]
+CMD ["bash", "-c", "source /app/devel/setup.bash && roslaunch cpu all.launch"]
