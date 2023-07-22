@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
             # - hard code id 2 only
             # mc12_publish = [ [2, pos, vel, tor] for mc_id, pos,vel, tor in mc12_publish]
-            mc12_publish= [[2, math.nan, 3.0, 3.0]]
+            mc12_publish= [[2, float('nan'), 3.0, 3.0]]
             
         # 3. jsonify and publish
         json_tosend = json.dumps({"id":msg_id, "mc12": mc12_publish})
