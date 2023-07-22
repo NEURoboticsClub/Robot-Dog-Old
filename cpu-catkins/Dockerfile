@@ -13,6 +13,7 @@ RUN apt-get update && \
 
     # 2.2 Complete installation and rosdep
     apt-get install -y ros-melodic-desktop-full --fix-missing && \
+    apt-get install -y ros-melodic-rostopic && \
     apt-get install python-rosdep && \
     rosdep update
 

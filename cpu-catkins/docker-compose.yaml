@@ -17,7 +17,8 @@ services:
 
     # This will override command written in CMD in Dockerfile
     # - ROS launch will run a single ros master and the other nodes stated in all_launch file
-    # - We dont need to make a ros master in another container    
+    # - We dont need to make a ros master in another container
+    # By running source /app/devel/setup.bash, you're setting up the necessary environment variables to use ROS.
     command:  bash -c "source /app/devel/setup.bash && roslaunch cpu all_launch.launch"
     network_mode: host
 

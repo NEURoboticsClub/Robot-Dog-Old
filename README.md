@@ -83,3 +83,10 @@ cd into the pi directory and run:
 
 ## Step 3: To stop any running containers:  
 ```docker compose down```
+
+
+## To play in bash shell in the docker container:
+docker-compose exec cpu-node /bin/bash  
+cpu-node is the service name defined in docker-compose.yaml file  
+
+
