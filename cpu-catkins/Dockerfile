@@ -3,7 +3,7 @@ FROM ros:melodic
 
 WORKDIR /app
 
-# 2. RUN
+# 2. install 
 RUN apt-get update
 RUN apt-get install -y python-yaml
 
@@ -12,13 +12,14 @@ RUN apt-get install -y python-yaml
 # should not copy the build/, devel/, or install/ directories from your host machine to your Docker container.
 # These directories are generated when you build your Catkin workspace,
 # and their contents are specific to the system where you did the build.
-COPY ./catkin_ws/src ./src
+COPY ./catkin_ws/src/champ ./src/champ
+COPY ./catkin_ws/src/champ_teleop ./src/champ_teleop
+COPY ./catkin_ws/src/cpu/package.xml ./src/cpu/
 
-
-# 4. CHAMP requirement
+# 4. CHAMP install dependencies thats defined in packages.xml in src folder
 RUN rosdep install --from-paths src --ignore-src -r -y
 
-
+COPY ./catkin_ws/src/cpu ./src/cpu
 # 5. Run catkin_make to build your workspace
 # - /opt/ros/melodic/setup.bash
 # This command sources the setup script for the ROS environment.

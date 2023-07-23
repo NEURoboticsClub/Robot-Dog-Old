@@ -37,8 +37,7 @@ https://docs.docker.com/compose/install/linux/#install-using-the-repository
 Copy the cpu directory into your machine (non-PI).  
 Copy the pi directory into your PI
 
-## Step 1: Run ros-master, cpu-node, bridge-nodes:  
-### OPTION 1: ros-master and cpu-node in your machine, and bridge-nodes in PI:  
+## Step 1: Run ros nodes:   
 #### Step 1.1: Inside the cpu dir, get ROS_MASTER_URI and ROS_IP from your CPU machine for the docker-compose
 Make sure Raspberry PI is connected to your machine.    
 Enter the command below in your machine to get ROS_MASTER_URI which is the ip address of your machine:  
@@ -74,10 +73,6 @@ This is needed so that ROS nodes can communicate with each other not just with t
 #### Step 1.4: Inside pi dir, run bridge nodes:  
 ```docker compose up --build``` 
 
-### OPTION 2: Run all nodes in PI:  
-cd into the pi directory and run:  
-```docker compose -f docker-compose-allpi.yaml up --build```
-
 ## Step 2: Inside pi dir, run motor controller:  
 ```python3 mc_test.py```  
 
@@ -85,8 +80,20 @@ cd into the pi directory and run:
 ```docker compose down```
 
 
-## To play in bash shell in the docker container:
-docker-compose exec cpu-node /bin/bash  
-cpu-node is the service name defined in docker-compose.yaml file  
+## Step 4: To play in bash shell in the docker container:
+docker exec -it <container_id_or_name> bash
+example:  
+docker exec -it cpu-catkins-cpu-node-1 bash  
+
+## Step 5: To run teleop  
+source /app/devel/setup.bash  
+roslaunch champ_teleop teleop.launch  
+
+## Step 6: To check current position
+rostopic echo /joint_states/position
+
+
+
+
 
 
