@@ -35,8 +35,8 @@ https://docs.docker.com/compose/install/linux/#install-using-the-repository
 
 2. Python3 installed in PI  
 ## Step 0: Prepare the workspace directory in both machine:  
-git clone this repo into your machine (non-PI).  
-git clone this repo into your PI ( if you also need to run pi)
+git clone this repo into your machine (your laptop).  
+git clone this repo into your Raspberry Pi ( if you also need to run pi)
 
 ## Step 1: Setting up the network:   
 ### Step 1.1 Setting up the network in CPU: 
@@ -47,24 +47,18 @@ git clone this repo into your PI ( if you also need to run pi)
 Example:  
 ```enx00e04c681fa8: flags=4163<UP,BROADCAST,RUNNING,MULTICAST> \n mtu 1500 inet 10.42.0.1  netmask 255.255.255.0  broadcast 10.42.0.255 ```  
 3. The ip address we want is 10.42.0.1  
-4. Then then environment variables in docker-compose file in cpu directory should have the following:  
+4. Then the environment variables in docker-compose file in cpu-catkins directory should have the following:  
 ```"ROS_MASTER_URI=http://10.42.0.1:11311"```  
 ```"ROS_IP=10.42.0.1"```  
 The ROS_MASTER_URI is to identify which container ip the ROS master is in.  
-The ROS_IP is to identify which container ip the cpu_node is in. 
+The ROS_IP is to identify which ip address the container that run all of the ROS nodes are in. 
 
 #### MacOS (will not be able to connect to pi)
-1. Enter the command below in your machine to get ROS_MASTER_URI which is the ip address of your machine:  
-```ifconfig```  
-2. Find the ip address that starts with "en0"  
-Example:  
-```en0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 150 options=6463<RXCSUM,TXCSUM,TSO4,TSO6,CHANNEL_IO,PARTIAL_CSUM,ZEROINVERT_CSUM> ether ac:c9:06:26:82:75 inet 10.0.0.94 ```  
-3. The ip address we want is  10.0.0.94
-4. Then then environment variables in docker-compose file in cpu directory should have the following:  
-```"ROS_MASTER_URI=http://10.0.0.94:11311"```  
-```"ROS_IP=10.0.0.94"```  
+The environment variables in docker-compose file in cpu-catkins directory should have the following:  
+```"ROS_MASTER_URI=http://localhost:11311"```  
+```"ROS_IP=localhost"```  
 The ROS_MASTER_URI is to identify which container ip the ROS master is in.  
-The ROS_IP is to identify which container ip the cpu_node is in. 
+The ROS_IP is to identify which ip address the container that run all of the ROS nodes are in. 
 
 ### Step 1.2: Setting up network in Pi (linux only):  
 Now we want to do the same for the nodes in our Pi. 
