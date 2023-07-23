@@ -3,5 +3,5 @@
   <include file="$(find champ_config)/launch/bringup.launch">
     <!-- <arg name="rviz" value="true"/> -->
   </include>
-  <include file="$(find champ_teleop)/launch/teleop.launch"/>
+  <!-- <include file="$(find champ_teleop)/launch/teleop.launch"/> -->
 </launch>

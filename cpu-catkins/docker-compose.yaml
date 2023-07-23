@@ -23,4 +23,5 @@ services:
     network_mode: host
 
     # Allow python to print to output immediately
-    tty: true 
+    tty: true
+    stdin_open: true
