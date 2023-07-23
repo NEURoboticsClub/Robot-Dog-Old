@@ -63,7 +63,7 @@ if __name__ == "__main__":
     pub = rospy.Publisher('cpu_topic', String, queue_size=100)
     sub_mc = rospy.Subscriber('mc_topic', String, get_mc_info)
     sub_cmd_vel = rospy.Subscriber('cmd_vel', Twist, get_cmd_vel)
-    # sub_pose = rospy.Subscriber('body_pose', Pose, get_body_pose)
+    sub_pose = rospy.Subscriber('body_pose', Pose, get_body_pose)
     sub_joint_states = rospy.Subscriber('joint_states', JointState, get_joint_states)
     rate = rospy.Rate(40) # publishing rate (40 per seconds)
     print("cpu_node started...")
