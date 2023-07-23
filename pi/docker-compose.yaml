@@ -3,7 +3,7 @@ version: '3.7'
 services:
   bridge-container:
     build:
-      context: ./bridge_nodes_thread
+      context: ./bridge_nodes
       dockerfile: Dockerfile
     environment:
       # the ip of ros master

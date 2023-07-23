@@ -22,8 +22,8 @@ RUN apt-get install -y ros-melodic-desktop-full --fix-missing
 # Ensure that Python 3.7 is used
 RUN ln -sf /usr/bin/python3 /usr/bin/python
 
-COPY mc_sub_thread.py ./mc_sub_thread.py
-COPY cpu_sub_thread.py ./cpu_sub_thread.py
+COPY mc_sub.py ./mc_sub.py
+COPY cpu_sub.py ./cpu_sub.py
 COPY run.sh ./run.sh
 
 RUN chmod a+x ./run.sh
