@@ -1,5 +1,5 @@
 # ros-docker
-## INTRODUCTION: 
+# INTRODUCTION: 
 This repo contain a communication framework that will a part of robot dog project in this repo:  
 https://github.com/NEURoboticsClub/NU-Dog/tree/main  
 
@@ -10,10 +10,10 @@ So the objective is to set up a communication framework so that a ROS node in ou
 
 This framework will solve the incompatibility issue by leveraging Docker containers.  
 
-### How does this work?  
+### INTRO: How does this work?  
 We will run what we will call the “bridge” nodes which are ROS nodes that will be running in the Docker environment with ROS package and other dependencies installed. These nodes do not do anything other than passing messages back and forth between MC and CPU. They are multi-threaded so that they can listen and publish messages either using Python sockets or use ROS built-in publisher-subscriber framework concurrently. 
 
-### What actually happens when we start running these nodes?  
+### INTRO: What actually happens when we start running these nodes?  
 
 Take a look at the diagram below which illustrates the high level overview of the messages that are passed.  
 
@@ -27,6 +27,7 @@ Take a look at the diagram below which illustrates the high level overview of th
 
 4. MC_sub bridge node will publish messages on MC topic so that its subscriber (the cpu node) can listen and invoke its callback function and do whatever it wants to do with this new motor attributes info.  
 
+# QUICK START 
 ## PREREQUSITES:  
 1. Docker and docker compose installed in your machine and PI  
 Follow the link below to install docker compose in linux:  
@@ -34,63 +35,85 @@ https://docs.docker.com/compose/install/linux/#install-using-the-repository
 
 2. Python3 installed in PI  
 ## Step 0: Prepare the workspace directory in both machine:  
-Copy the cpu directory into your machine (non-PI).  
-Copy the pi directory into your PI
+git clone this repo into your machine (non-PI).  
+git clone this repo into your PI ( if you also need to run pi)
 
-## Step 1: Run ros nodes:   
-#### Step 1.1: Inside the cpu dir, get ROS_MASTER_URI and ROS_IP from your CPU machine for the docker-compose
-Make sure Raspberry PI is connected to your machine.    
-Enter the command below in your machine to get ROS_MASTER_URI which is the ip address of your machine:  
+## Step 1: Setting up the network:   
+### Step 1.1 Setting up the network in CPU: 
+#### Linux:
+1. Enter the command below in your machine to get ROS_MASTER_URI which is the ip address of your machine:  
 ```ifconfig```  
-If you are connected to PI using ethernet, find the ip address that starts with "enx"  
+2. If you are connected to PI using ethernet, find the ip address that starts with "enx"  
 Example:  
-```enx00e04c681fa8: flags=4163<UP,BROADCAST,RUNNING,MULTICAST> \n mtu 1500 inet 10.42.0.1  netmask 255.255.255.0  broadcast 10.42.0.255 ```
-The ip address we want is 10.42.0.1  
-Then then environment variables in docker-compose file in cpu directory should have the following:  
+```enx00e04c681fa8: flags=4163<UP,BROADCAST,RUNNING,MULTICAST> \n mtu 1500 inet 10.42.0.1  netmask 255.255.255.0  broadcast 10.42.0.255 ```  
+3. The ip address we want is 10.42.0.1  
+4. Then then environment variables in docker-compose file in cpu directory should have the following:  
 ```"ROS_MASTER_URI=http://10.42.0.1:11311"```  
 ```"ROS_IP=10.42.0.1"```  
 The ROS_MASTER_URI is to identify which container ip the ROS master is in.  
 The ROS_IP is to identify which container ip the cpu_node is in. 
 
-#### Step 1.2: Inside the pi dir, get the ROS_IP for docker-compose:  
-Now we want to do the same for the nodes in our PI. 
-In your pi terminal enter: 
+#### MacOS (will not be able to connect to pi)
+1. Enter the command below in your machine to get ROS_MASTER_URI which is the ip address of your machine:  
+```ifconfig```  
+2. Find the ip address that starts with "en0"  
+Example:  
+```en0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 150 options=6463<RXCSUM,TXCSUM,TSO4,TSO6,CHANNEL_IO,PARTIAL_CSUM,ZEROINVERT_CSUM> ether ac:c9:06:26:82:75 inet 10.0.0.94 ```  
+3. The ip address we want is  10.0.0.94
+4. Then then environment variables in docker-compose file in cpu directory should have the following:  
+```"ROS_MASTER_URI=http://10.0.0.94:11311"```  
+```"ROS_IP=10.0.0.94"```  
+The ROS_MASTER_URI is to identify which container ip the ROS master is in.  
+The ROS_IP is to identify which container ip the cpu_node is in. 
+
+### Step 1.2: Setting up network in Pi (linux only):  
+Now we want to do the same for the nodes in our Pi. 
+1. In your pi terminal enter: 
 ```hostname -I```.  
-Get the ip address that has the same first few digits as the one in your CPU since they are connected with ethernet
-You will see the output like below  :
+2. Get the ip address that has the same first few digits as the one in your CPU since they are connected with ethernet
+3. You will see the output like below  :
 ```10.42.0.215 172.17.0.1 ```  
-Notice that the first one has the same first few digits as the one in the previous step. That is the ip for PI container that we want to use.  
-Now in your docker-compose file in PI directory, add the following to your environment variable:  
+4. Notice that the first one has the same first few digits as the one in the previous step. That is the ip for PI container that we want to use.  
+5. Now in your docker-compose file in PI directory, add the following to your environment variable:  
 ```"ROS_MASTER_URI=http://10.42.0.1:11311"```  
 ```"ROS_IP=10.42.0.215"```  
 The ROS_IP is to identify which container ip the bridge nodes are in. 
 This is needed so that ROS nodes can communicate with each other not just with the master  
 
 
-#### Step 1.3: Inside cpu dir, run cpu and master node:  
+## Step 2: Run nodes in CPU:  
+Inside cpu-catkins directory where your docker-compose.yaml files is run:  
 ```docker compose up --build```  
 
-#### Step 1.4: Inside pi dir, run bridge nodes:  
+## Step 3. Run nodes in Pi:  
+Inside the pi/ directory where your docker-compose.yaml files is run:  
 ```docker compose up --build``` 
 
-## Step 2: Inside pi dir, run motor controller:  
+## Step 4: Inside pi dir, run motor controller:  
+Inside the pi/ directory where mc_test.py is run:  
 ```python3 mc_test.py```  
 
-## Step 3: To stop any running containers:  
+## Step 5: To stop any running containers:  
 ```docker compose down```
 
 
-## Step 4: To play in bash shell in the docker container:
-docker exec -it <container_id_or_name> bash
-example:  
-docker exec -it cpu-catkins-cpu-node-1 bash  
+## Step 7: Run teleop in a new terminal:  
+1. open new terminal in your laptop 
+2. run:  
+```docker exec -it cpu-catkins-cpu-node-1 bash```  
+```source /app/devel/setup.bash```    
+```roslaunch champ_teleop teleop.launch``` 
 
-## Step 5: To run teleop  
-source /app/devel/setup.bash  
-roslaunch champ_teleop teleop.launch  
+Note that the first line is to allow you to go inside the terminal in docker container and run any command you wish. "cpu-catkins-cpu-node-1" is the docker container name that you can see on the terminal in your cpu where you run docker compose up in step 2.  
 
-## Step 6: To check current position
-rostopic echo /joint_states/position
+## EXTRA INFO: To run any ros command in a new terminal
+1. open new terminal in your laptop 
+2. run:  
+```docker exec -it cpu-catkins-cpu-node-1 bash```    
+```source /app/devel/setup.bash```
+3. run any ros command such as:  
+```rostopic echo /joint_states/position```  
+```rostopic info /cmd_vel```    
 
 
 
