@@ -36,7 +36,7 @@ Take a look at the diagram below which illustrates the high level overview of th
 https://docs.docker.com/desktop/install/linux-install/  
 
 2. Make sure Docker compose is already installed on your machine:  
-   """docker-compose --version"""  
+   ```docker-compose --version``` 
    - We will be using version 2  
    - If its not yet install go to:  
    https://docs.docker.com/compose/install/linux/#install-using-the-repository  
