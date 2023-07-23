@@ -9,7 +9,6 @@ import queue
 client_socket = None
 global cpu_data
 cpu_data = queue.Queue()
-
 # Callback function when publisher publish something on this topic
 def callback(data):
     global client_socket, cpu_data
