@@ -1,4 +1,6 @@
 # ros-docker
+- [Introduction](#introduction)
+- [Quick Start](#quick-start)
 # INTRODUCTION: 
 This repo contain a communication framework that will a part of robot dog project in this repo:  
 https://github.com/NEURoboticsClub/NU-Dog/tree/main  
@@ -17,7 +19,8 @@ We will run what we will call the “bridge” nodes which are ROS nodes that wi
 
 Take a look at the diagram below which illustrates the high level overview of the messages that are passed.  
 
-<img width="1157" alt="Screenshot 2023-07-13 at 2 42 40 PM" src="https://github.com/freecode23/ros-docker/assets/67333705/8d88c263-55ef-4767-9753-e63fb5ea1e48"> 
+<img width="1366" alt="Screenshot 2023-07-23 at 4 44 35 PM" src="https://github.com/freecode23/ros-docker/assets/67333705/6915a31d-66f0-4a2f-8ae0-7b906279474f">
+
 
 1. The cpu and ROS master node will start and the cpu node will send the initial command to MC using the ROS publisher framework. This message will be received by cpu_sub.py which is one of the bridge nodes that subscribes to the topic published by cpu.  
 
