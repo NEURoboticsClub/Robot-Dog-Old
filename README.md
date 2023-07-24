@@ -12,38 +12,42 @@ So the objective is to set up a communication framework so that a ROS node in ou
 
 This framework will solve the incompatibility issue by leveraging Docker containers.  
 
-### INTRO: How does this work?  
+### How does this work?  
 We will run what we will call the “bridge” nodes which are ROS nodes that will be running in the Docker environment with ROS package and other dependencies installed. These nodes do not do anything other than passing messages back and forth between MC and CPU. They are multi-threaded so that they can listen and publish messages either using Python sockets or use ROS built-in publisher-subscriber framework concurrently. 
 
-### INTRO: What actually happens when we start running these nodes?  
+### What actually happens when we start running these nodes?  
 
 Take a look at the diagram below which illustrates the high level overview of the messages that are passed.  
 
 <img width="1366" alt="Screenshot 2023-07-23 at 4 44 35 PM" src="https://github.com/freecode23/ros-docker/assets/67333705/6915a31d-66f0-4a2f-8ae0-7b906279474f">
 
 
-1. The cpu and ROS master node will start and the cpu node will send the initial command to MC using the ROS publisher framework. This message will be received by cpu_sub.py which is one of the bridge nodes that subscribes to the topic published by cpu.  
+1. The `champ_teleop` module enables us to dictate the desired movements of the robotic dog via keyboard input. It accomplishes this by publishing the input data on multiple topics, which include `cmd_vel` and `body_pose`. 
 
-2. Cpu_sub will then pass on to MC using socket. MC will receive these bytes messages, convert them to JSON and set the attributes of the 12 motors. The attributes are: motor id, velocity, position, and torques.  
+2. Some nodes in `champ_config` are designed to subscribe to these topics. They then publish the necessary pose and velocity details that the twelve Motor Controllers (MCs) need to execute. Before these details are passed onto the MCs, the Central Processing Unit (CPU) node processes this information. 
 
-3. MC will call getParsedResults() method, which will grab the current motor attributes at real time and send them to mc_sub bridge node via socket.  
+3. The CPU node communicates the command to the MCs using the ROS publisher framework. The `cpu_sub` node, which is one of the bridge nodes, subscribes to the topic published by the CPU, thereby receiving this message. 
 
-4. MC_sub bridge node will publish messages on MC topic so that its subscriber (the cpu node) can listen and invoke its callback function and do whatever it wants to do with this new motor attributes info.  
+4. The `cpu_sub` node then forwards the message to the MCs via a socket. Upon receiving these byte messages, the MCs convert them into JSON format and set the attributes of the twelve motors. These attributes include the motor ID, velocity, position, and torque. 
+
+5. The MCs call the `getParsedResults()` method, which fetches the real-time attributes of the motors and sends them to the `mc_sub` bridge node via a socket.
+
+6. The `mc_sub` bridge node then publishes messages on the MC topic. Consequently, its subscriber (the CPU node) can listen to these messages, invoke its callback function, and perform necessary actions with this new information about motor attributes. Specifically, in our setup, the CPU node takes this information along with the data received from `champ_config` packages to adjust the new command that it should send to the MCs.
 
 # Quick Start
-## PREREQUSITES:  
+## Prerequites:  
 1. Docker installed in your machine:  
 https://docs.docker.com/desktop/install/linux-install/  
 
 2. Make sure Docker compose is already installed on your machine:  
    ```docker-compose --version``` 
    - We will be using version 2  
-   - If its not yet install go to:  
+   - If it's not yet installed, go to:  
    https://docs.docker.com/compose/install/linux/#install-using-the-repository  
 
 3. If you need to run Raspberry Pi:  
-- Python3 installed in Pi  
-- Docker and docker compose installed  
+   - Make sure Python3 is installed in Pi  
+   - Docker and docker compose installed  
 
 ## Step 0: Prepare the workspace directory in both machine:  
 git clone this repo into your machine (your laptop).  
@@ -120,7 +124,13 @@ Inside the pi/ directory where mc_test.py is run:
 ```rostopic info /cmd_vel```
    
 ## 2. To stop any running containers:  
-```docker compose down```
+```docker compose down```  
+
+## 3. What happens when they all start running:    
+
+https://github.com/freecode23/ros-docker/assets/67333705/48e9ce1a-7318-4152-bdc5-fee3295179fc
+
+
 
 
 
