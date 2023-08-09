@@ -1,7 +1,6 @@
 import errno
 import json
-import math
-import queue
+import random
 import socket
 import threading
 import time
@@ -20,17 +19,17 @@ def get_parsed_results():
             parsed.append(
                 {
                     "MODE" : 3,
-                    "POSITION" : 1.0,
-                    "VELOCITY" : 1.0,
-                    "TORQUE" : 1.0,
-                    "VOLTAGE": 1.0,
+                    "POSITION" : random.uniform(1.0, 3.0),
+                    "VELOCITY" : 2.2,
+                    "TORQUE" : 2.2,
+                    "VOLTAGE": 2.2,
                     "TEMPERATURE" : 1.0,
                     "FAULT" : 1.0
                 }
             )
         return parsed
 
-def get_cpu_info(sock):
+def get_cpu_command(sock):
     while True:
         try:
             # 0. get message and process
@@ -49,16 +48,18 @@ def get_cpu_info(sock):
             # 3. skip if not data received yet
             if not mc12:
                 continue
-            # cpu_data.put(mc12)
             
-            # 4. get data for 2nd motor (0th index, since theres only 1 motor connected
-            mc2data = mc12[0]
+            # OPTION 1: If there is only 1 motor
+            # - get data for 2nd motor (1st index) we are getting 12 datas from cpu
+            mc2data = mc12[1]
 
-            # 5. log
-            print("MC: from CPU id={}, m_mc2={}".format(msg_id, mc2data))
-
-            # 6. set attributes
+            # -set attributes for motor 2 only
             # m.setAttributes(mc2data[0], pos=mc2data[1], velocity = mc2data[2], torque=mc2data[3])
+
+            # OPTION 2: there are 12 motors to set
+
+            # 6. log
+            print("MC: from CPU id={}, m_mc2={}".format(msg_id, mc2data))
         
         except KeyError:
                 print("Error: 'id' or 'mc12' key not found in JSON data")
@@ -74,26 +75,44 @@ def get_cpu_info(sock):
     
       
 
-def send_mc_info(sock):
+def send_mc_states(sock):
         
     id = 1
     while True:
         # 0. get data from the 12 controllers
         # if connected to 1 motor, there's only 1 element
-        parsedRes = get_parsed_results()
+        parsedRes = get_parsed_results()    
+                
+        mcs12_current = None
+        # 1. if there is only 1 motor connected
+        if len(parsedRes) == 1:
 
-        # - hard code motor id= 2
-        motorId = 2
-        mcs12 = [[motorId, math.nan, parsed["VELOCITY"], parsed["TORQUE"] ] for parsed in parsedRes]
+            # set all to the same vel and torque of the only motor connected and add to parsedRes
+            pos, vel, tor = parsedRes[0]["POSITION"], parsedRes[0]["VELOCITY"], parsedRes[0]["TORQUE"]
+            for _ in range(11):
+                parsedRes.append(
+                {
+                    "MODE" : 3,
+                    "POSITION" : pos,
+                    "VELOCITY" : vel,
+                    "TORQUE" : tor,
+                    "VOLTAGE": 1.0,
+                    "TEMPERATURE" : 1.0,
+                    "FAULT" : 1.0
+                }
+            )
+
+        # 2. set all the 12, use motor id from 1-12 and send to cpu
+        mcs12_current = [[id+1, parsedRes[0]["POSITION"], parsed["VELOCITY"], parsed["TORQUE"] ] for id, parsed in enumerate(parsedRes)]
         
-        # 1. create a dict
-        data = {"mc12": mcs12, "id":id}
+        # 3. create a dict
+        data = {"mc12": mcs12_current, "id":id}
 
-        # 2. send as bytes encoded json
+        # 4. send as bytes encoded json
         sock.send((json.dumps(data)).encode())
         id+=1
 
-        # 3. sleep for 20ms so its sending at 50Hz
+        # 5. sleep for 20ms so its sending at 50Hz
         time.sleep(0.02)
 
 
@@ -111,15 +130,15 @@ def main():
     mc_sub_socket.connect((SERVER_HOST, MC_SUB_SERVER_PORT))
 
     # 3. init thread
-    get_cpu_info_thread = threading.Thread(target=get_cpu_info, args=(cpu_sub_socket,))
-    send_mc_info_thread = threading.Thread(target=send_mc_info, args=(mc_sub_socket,))
+    get_cpu_command_thread = threading.Thread(target=get_cpu_command, args=(cpu_sub_socket,))
+    send_mc_states_thread = threading.Thread(target=send_mc_states, args=(mc_sub_socket,))
     
     # 4. run
-    get_cpu_info_thread.start()
-    send_mc_info_thread.start()
+    get_cpu_command_thread.start()
+    send_mc_states_thread.start()
 
-    get_cpu_info_thread.join()
-    send_mc_info_thread.join()
+    get_cpu_command_thread.join()
+    send_mc_states_thread.join()
 
 
 if __name__ == "__main__":

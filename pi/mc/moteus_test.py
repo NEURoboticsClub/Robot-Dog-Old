@@ -503,7 +503,7 @@ class Moteus:
         self.setAttributes(1,pos=math.nan,velocity=0, torque=2)
         self.setAttributes(2,pos=math.nan,velocity=0, torque=2)
     
-    def get_cpu_info(self, sock, m):
+    def get_cpu_command(self, sock, m):
         """
         Receive cpu message from bridge nodes using tcp socket
         and use the data to set attributes to the 12 motor controllers
@@ -539,7 +539,7 @@ class Moteus:
                 m.setAttributes(mc2data[0], pos=mc2data[1], velocity = mc2data[2], torque=mc2data[3])
             
             except KeyError:
-                    print("Error: 'id' or 'mc12' key not found in JSON data")
+                print("Error: 'id' or 'mc12' key not found in JSON data")
             except json.JSONDecodeError:
                 print("Error: Invalid JSON data received. Reconnecting...")
             
@@ -551,23 +551,42 @@ class Moteus:
                     print("broken pipe: {}".format(e))
       
       
-    def send_mc_info(self, sock):
+    def send_mc_states(self, sock):
         id = 1
         while True:
-            # 1. get data from the 12 controllers.
-            # if we are only connected to 1 motor, then theres only 1 info
-            parsedRes = self.getParsedResults()
-            motorID = 2
-            mcs12 = [[motorID, math.nan, parsed["VELOCITY"], parsed["TORQUE"] ] for parsed in parsedRes]
+            # 0. get data from the 12 motors
+            parsedRes = self.getParsedResults()    
+                    
+            mcs12_current = None
+            # 1. if there is only 1 motor connected
+            if len(parsedRes) == 1:
 
-            # 2. create a dict
-            data = {"mc12": mcs12, "id":id}
+                # set all to the same vel and torque of the only motor connected and add to parsedRes
+                pos, vel, tor = parsedRes[0]["POSITION"], parsedRes[0]["VELOCITY"], parsedRes[0]["TORQUE"]
+                for _ in range(11):
+                    parsedRes.append(
+                    {
+                        "MODE" : 3,
+                        "POSITION" : pos,
+                        "VELOCITY" : vel,
+                        "TORQUE" : tor,
+                        "VOLTAGE": 1.0,
+                        "TEMPERATURE" : 1.0,
+                        "FAULT" : 1.0
+                    }
+                )
 
-            # 3. send as bytes encoded json
+            # 2. set all the 12, use motor id from 1-12 and send to cpu
+            mcs12_current = [[id+1, parsedRes[0]["POSITION"], parsed["VELOCITY"], parsed["TORQUE"] ] for id, parsed in enumerate(parsedRes)]
+            
+            # 3. create a dict
+            data = {"mc12": mcs12_current, "id":id}
+            
+            # 4. send as bytes encoded json
             sock.send((json.dumps(data)).encode())
             id+=1
 
-            # 4. sleep for 20ms so its sending at 50Hz
+            # 5. sleep for 20ms so its sending at 50Hz
             time.sleep(0.02)
 
 
@@ -616,15 +635,15 @@ async def main(m):
     mc_sub_socket.connect((SERVER_HOST, MC_SUB_SERVER_PORT))
 
     # 3. init thread
-    get_cpu_info_thread = Thread(target=m.get_cpu_info, args=(cpu_sub_socket, m,))
-    send_mc_info_thread = Thread(target=m.send_mc_info, args=(mc_sub_socket,))
+    get_cpu_command_thread = Thread(target=m.get_cpu_command, args=(cpu_sub_socket, m,))
+    send_mc_states_thread = Thread(target=m.send_mc_states, args=(mc_sub_socket,))
 
     # # 4. run
-    get_cpu_info_thread.start()
-    send_mc_info_thread.start()
+    get_cpu_command_thread.start()
+    send_mc_states_thread.start()
 
-    get_cpu_info_thread.join()
-    send_mc_info_thread.join()
+    get_cpu_command_thread.join()
+    send_mc_states_thread.join()
 
 
     # while True:
