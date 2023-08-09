@@ -18,6 +18,10 @@ class CPUNode:
         # [ 0.22, 1.231 , .... ]
         self.joints_pos_data = queue.Queue()
         self.msg_id = 1
+        self.prevErrors = [0] * 12
+        self.prevTime = rospy.Time.now().to_sec()
+        self.time = rospy.Time.now().to_sec()
+
         
         # 3. set publisher for the command from cpu
         self.pub = rospy.Publisher('cpu_topic', String, queue_size=100)
@@ -29,7 +33,6 @@ class CPUNode:
         print("cpu_node started...")
 
     def get_mc_info(self, data):
-        print("get mc info")
         # 1. grab the data that's just been published
         json_dict = json.loads(data.data)
         msg_id = json_dict.get("id", "No ID found")
@@ -41,35 +44,47 @@ class CPUNode:
         print("CPU_NODE: id={}, from MC={}".format(msg_id, mc12))
 
     def get_joint_states(self, data):
-        # print("CPU_NODE: joint_states={}".format(data.position))
+        self.time = data.header.stamp.secs
         self.joints_pos_data.put(data.position)
 
-    def arrayDiffFinder(self, actual, expected, time, prevTime, prevError):
+    def arrayDiffFinder(self, mcs12_pos, joint_states_pos):
+        """
+        mcs12_pos is array of position of the 12 motors from mc
+        joint_states_pos is array of posisition of the 12 motors from joint_states_pos
+        time is the last time we get joint_states postion
+        prevTime is the last time this function is called
+        """
+
         kp = 0.5
         kd = 0.5
-        error = [(expected[i]-actual[i]) for i in range(0, len(actual))]
-        dError = [((error[i] - prevError[i])/(time - prevTime)) for i in range(0,len(error))] 	
-        output = [kp*error[i]+ kd*dError[i] for i in range(0,len(error))]
-        return output, time, error
+        errors = [(joint_states_pos[i] - mcs12_pos[i]) for i in range(0, len(mcs12_pos))]
+        dError = [((errors[i] - self.prevErrors[i]) / (self.time - self.prevTime)) for i in range(0,len(errors))] 	
+        vels = [kp * errors[i]+ kd * dError[i] for i in range(0,len(errors))]
+        
+        return vels, self.time, errors
 
     def publish_command(self):
         mc12_command = None
 
-
-        # 1. if this is the first command, just hard code
+        # 1. if this is the first command, just hard code or use the first command from joint_states?
         if self.mc12_data.empty():
             mc12_command = [[mcid, float('nan'), 2.0, 1.0] for mcid in range(1, 13)]
 
         # 2. motor already moving, do some compute
         else:
+            # don't publish any command if the last time we publish is the same second
+            if self.prevTime == self.time:
+                return
             # - grab the last mc states and the command from joints
-            mc12_last = self.mc12_data.get()
+            mc12_last = [ datas[1] for datas in self.mc12_data.get()]
             joints_last = self.joints_pos_data.get()
 
-            # - do some compute 
-
+            # - do some compute
+            # print("CPU_NODE: currT={}, prevT={}".format(self.time, self.prevTime))
+            vels, self.prevTime, self.prevErrors = self.arrayDiffFinder(mc12_last, joints_last)
+            
             # - assign to mc12 command
-            mc12_command= [[id, float('nan'), 3.0, 3.0] for id in range(1,13)]
+            mc12_command= [[id, float('nan'),vels[id-1], 3.0] for id in range(1,13)]
 
         # send the 12 of them
         json_tosend = json.dumps({"id": self.msg_id, "mc12": mc12_command})
