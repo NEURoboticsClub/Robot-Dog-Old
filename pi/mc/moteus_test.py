@@ -528,16 +528,15 @@ class Moteus:
                     continue
                 
                 # 4. get data for 2nd motor (index = 1, if there are 12 motors)
-                # but if we are only testing 1 motor then its just index = 0
-                motorIdx = 0
+                motorIdx = 1
                 mc2data = mc12[motorIdx]
 
-                # 5. log
-                print("MC: from CPU id={}, m_mc2={}".format(msg_id, mc2data))
 
-                # 6. set attributes
+                # 5. set attributes
                 m.setAttributes(mc2data[0], pos=mc2data[1], velocity = mc2data[2], torque=mc2data[3])
-            
+                
+                # 6. log
+                print("MC: from CPU id={}, m_mc2={}".format(msg_id, mc2data))           
             except KeyError:
                 print("Error: 'id' or 'mc12' key not found in JSON data")
             except json.JSONDecodeError:
