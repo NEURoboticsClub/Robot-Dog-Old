@@ -1,0 +1,8 @@
+prefix=/home/dartis/NU-Dog/ros_ws/devel
+
+Name: nuDogv6
+Description: Description of nuDogv6
+Version: 1.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

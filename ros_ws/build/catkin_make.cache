@@ -1,2 +1,2 @@
-nuDogv4_config
+champ/champ:champ/champ_base:champ/champ_bringup:champ/champ_config:champ/champ_description:champ/champ_gazebo:champ/champ_msgs:champ/champ_navigation:champ_teleop:nuDogv4_config:nuDogv6:nuDogv6_2_config:nuDogv6_config:nu_dog_config:yocs_velocity_smoother
 -DCATKIN_DEVEL_PREFIX=/home/dartis/NU-Dog/ros_ws/devel -DCMAKE_INSTALL_PREFIX=/home/dartis/NU-Dog/ros_ws/install -G Unix Makefiles
