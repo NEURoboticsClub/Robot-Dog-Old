@@ -71,7 +71,8 @@ class CPUNode:
         # it will only set to true once we receive the first mc parsed result
         if not self.motor_started:
             mc12_command = [[mcid, float('nan'), 2.0, 1.0] for mcid in range(1, 13)]
-            
+            print("CPU_NODE: id={}, 1st cmd2={}".format(self.msg_id, mc12_command[1]))
+             
 
         # case 2. motor already moving
         else:
@@ -92,7 +93,7 @@ class CPUNode:
             # mc12_command= [[id, float('nan'), 2.0, 1.0] for id in range(1,13)]
 
 
-        print("CPU_NODE: id={}, 1st cmd2={}".format(self.msg_id, mc12_command[1]))
+            print("CPU_NODE: id={}, cont cmd2={}".format(self.msg_id, mc12_command[1]))
             
         
         # 5. send the 12 motor commands to mc
