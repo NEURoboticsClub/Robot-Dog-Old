@@ -10,7 +10,7 @@ from sensor_msgs.msg import JointState
 class CPUNode:
     def __init__(self):
         rospy.init_node('cpu_node')
-        # 1. to store mc12 current states
+        # 1. to store mc12 current states (from mc)
         # each element is an array of 12 elements:
         # [[id1, pos1, vel1, torque1], ..., id12, pos12, vel12, torque12]]
         self.mc12_data = queue.Queue() 
@@ -77,20 +77,22 @@ class CPUNode:
         # case 2. motor already moving
         else:
             # 1. don't publish any command if no data from mc 
-            # - question: should we send previous command?
             if self.mc12_data.empty():
                 return
             
-            # 2. grab the last mc states position and the command from joints
+            # 2. grab the latest 12 mc states position
             mc12_last = [ datas[1] for datas in self.mc12_data.get()]
 
-            # 3. do some compute
+            # 3. do some compute to get next velocity
             vels, self.prevTime, self.prevErrors = self.arrayDiffFinder(mc12_last, joints_pos_cmd)
             
             # 4. assign the output velocity
-            mc12_command= [[id, float('nan'),vels[id-1], 1.0] for id in range(1,13)]
+            # OPTION 1: use command from teleop and output from the arrayDiffFinder computation >>>>>>>>
+            # mc12_command= [[id, float('nan'),vels[id-1], 1.0] for id in range(1,13)]
+            # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             
-            # mc12_command= [[id, float('nan'), 2.0, 1.0] for id in range(1,13)]
+            # OPTION2: hard code velocity to always be 2.0
+            mc12_command= [[id, float('nan'), 2.0, 1.0] for id in range(1,13)]
 
 
             print("CPU_NODE: id={}, cont cmd2={}".format(self.msg_id, mc12_command[1]))
@@ -102,7 +104,7 @@ class CPUNode:
         self.msg_id += 1
 
 
-    # Helper function for publish_command
+    # Helper function to compute next velocity
     def arrayDiffFinder(self, mcs12_pos, joint_cmd_pos):
         """
         mcs12_pos is array of position of the 12 motors from mc
