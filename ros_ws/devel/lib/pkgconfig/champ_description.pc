@@ -1,0 +1,8 @@
+prefix=/home/dartis/NU-Dog/ros_ws/devel
+
+Name: champ_description
+Description: Description of champ_description
+Version: 0.1.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

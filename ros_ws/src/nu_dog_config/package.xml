@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>nu_dog_config</name>
+  <version>0.1.0</version>
+  <description>nu_dog Champ Config Package</description>
+
+  <maintainer email="artis.d@northeastern.edu">D Artis</maintainer>
+  <author>D Artis</author>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>roslaunch</exec_depend>
+  <exec_depend>rviz</exec_depend>
+  <exec_depend>champ_base</exec_depend>
+  
+</package>
