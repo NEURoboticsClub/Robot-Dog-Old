@@ -123,7 +123,10 @@ docker compose up --build
 ## Step 4: Run moteus that runs motor controller in Pi:  
 Go to `pi/` directory where mc.py is r
 ### Option 1: Running in the Pi in the lab
-
+Run:  
+```
+python3 mc/moteus.py
+```
 
 ### Option 2: Running in your own Pi
 Run:  
