@@ -97,7 +97,7 @@ hostname -I
 10.42.0.215 172.17.0.1
 ```  
 4. Notice that the first one has the same first few digits as the one in the previous step. That is the ip for PI container that we want to use.  
-5. In docker-compose file in pi/ directory, eeplace the ip address with your own from previous step:  
+5. In docker-compose file in `pi/` directory, eeplace the ip address with your own from previous step:  
 ```
 ROS_MASTER_URI=http://10.42.0.1:11311
 ROS_IP=10.42.0.215
@@ -108,26 +108,31 @@ Note:
 - This is needed so that other ROS nodes in Cpu can communicate with these bridge nodes in Pi  
 
 ## Step 2: Run nodes in CPU:  
-Inside ./cpu-catkins/ directory where your docker-compose.yaml files is run:  
+Inside `/cpu-catkins` directory where your docker-compose.yaml files is run:  
 ```
 docker compose up --build
 ```  
 Wait until the container is built and you will see the cput node will print its command.
 
 ## Step 3. Run bridge nodes in Pi:  
-Inside the pi/ directory where your docker-compose.yaml files is run:  
+Inside the `pi/` directory where your docker-compose.yaml files is run:  
 ```
 docker compose up --build
 ```
 
 ## Step 4: Run moteus that runs motor controller in Pi:  
-Inside the pi/ directory where mc_test.py is run:  
+Go to `pi/` directory where mc.py is r
+### Option 1: Running in the Pi in the lab
+
+
+### Option 2: Running in your own Pi
+Run:  
 ```
 python3 mc/mc.py
 ```
 
 ## Step 5: Run teleop in CPU in new terminal  
-1. Open new terminal in your laptop and go inside the cpu-catkins directory. 
+1. Open new terminal in your laptop and go inside the `cpu-catkins/` directory. 
 2. Run:  
 ```
 docker exec -it cpu-catkins-cpu-node-1 bash
@@ -140,7 +145,7 @@ Note that the first line is to allow you to go inside the terminal in docker con
 
 ## EXTRA INFO: 
 ### 1. To run any ros command in a new terminal
-1. Open new terminal in your laptop and go into cput-catkins directory. 
+1. Open new terminal in your laptop and go into `cpu-catkins` directory. 
 2. Run:  
 ```
 docker exec -it cpu-catkins-cpu-node-1 bash    
