@@ -60,10 +60,10 @@ class CPUNode:
 
     def publish_command(self, joints_pos_cmd):
 
-        # log if this is a real command from teleop
-        # epsilon = 1e-10
-        # if abs(joints_pos_cmd[0] - (-7.351371067443324e-08)) > epsilon:
-        #     print("CPU_NODE: publish on pos={}".format(joints_pos_cmd))
+        # Uncomment this to check if command from teleop is received
+        epsilon = 1e-10
+        if abs(joints_pos_cmd[0] - (-7.351371067443324e-08)) > epsilon:
+            print("CPU_NODE: teleop cmd={}".format(joints_pos_cmd))
 
 
         mc12_command = None
@@ -87,7 +87,9 @@ class CPUNode:
             vels, self.prevTime, self.prevErrors = self.arrayDiffFinder(mc12_last, joints_pos_cmd)
             
             # 4. assign the output velocity
-            # OPTION 1: use command from teleop and output from the arrayDiffFinder computation >>>>>>>>
+            # OPTION 1: use command from teleop and output from the arrayDiffFinder computation.
+            # WARNING: Be prepare to stop the machine as the computation from arrDiffFinder can be erroneous and make
+            # the motor run too fast and breaks
             # mc12_command= [[id, float('nan'),vels[id-1], 1.0] for id in range(1,13)]
             # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             
