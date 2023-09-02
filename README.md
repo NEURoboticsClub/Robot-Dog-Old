@@ -125,7 +125,7 @@ Go to `pi/` directory where mc.py is r
 ### Option 1: Running in the Pi in the lab
 Run:  
 ```
-python3 mc/moteus.py
+python3 mc/moteus_test.py
 ```
 
 ### Option 2: Running in your own Pi
