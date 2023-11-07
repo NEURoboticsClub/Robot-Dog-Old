@@ -3,8 +3,10 @@ import errno
 import json
 import random
 import socket
-import threading
+import sys
 import time
+
+from pi.mc.sim_controller import SimController
 
 # Get local machine name
 SERVER_HOST = socket.gethostname()
@@ -108,7 +110,7 @@ async def send_mc_states(sock):
 		time.sleep(0.02)
 
 
-async def main():
+async def main(controller):
 	# 1. init socket and time out to listen to cpu_sub node
 	cpu_sub_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	cpu_sub_socket.settimeout(2.0)
@@ -124,10 +126,20 @@ async def main():
 	# 3. init thread
 	get_cpu_command_task = asyncio.create_task(get_cpu_command(cpu_sub_socket))
 	send_mc_states_task = asyncio.create_task(send_mc_states(mc_sub_socket))
+	controller_task = asyncio.create_task(controller.run())
 
 	# 4. run
-	await asyncio.gather(get_cpu_command_task, send_mc_states_task)
+	await asyncio.gather(controller_task, get_cpu_command_task, send_mc_states_task)
 
 
-if __name__ == "__main__":
-	asyncio.run(main())
+async def close_key(m):
+	await m.close_moteus()
+	m.mprint("Moteus Closed Properly")
+
+if __name__ == '__main__':
+	sim_controller = asyncio.run(SimController.create())
+	try:
+		asyncio.run(main(sim_controller))
+	except KeyboardInterrupt:
+		asyncio.run(close_key(sim_controller))
+		sys.exit(0)

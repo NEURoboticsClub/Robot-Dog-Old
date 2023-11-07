@@ -1,12 +1,11 @@
+import abc
 import asyncio
 import math
 from copy import deepcopy
-import moteus_pi3hat
-import moteus
-from MoteusException import MoteusCanError, MoteusPermissionsError
+from MoteusException import MoteusCanError
 
 
-class MoteusController:
+class MoteusController(abc.ABC):
 	"""Class used to manipulate the Moteus motor controllers via CAN using the Pi3Hat
 
 		Implements functions in order to set the attributes of all the motors as well as get the current states
@@ -20,7 +19,7 @@ class MoteusController:
 		@date 10/27/2021
 	"""
 
-	def __init__(self, ids, simulation):
+	def __init__(self, ids):
 		"""Default constructor for the Moteus class.
 
 			Before utilizing motors, make sure to wait using the waitUntilReady() function.
@@ -38,7 +37,7 @@ class MoteusController:
 				drive
 				 For example, [[],[],[4]] means that on CAN bus 3, there is 1 motor with ID 4 attached.
 				   - All of these IDs must be unique, regardless if they are on the same CAN bus or not.
-			@param simulation (NOT IMPLEMENTED YET) This parameter, default True,
+			simulation (NOT IMPLEMENTED YET) This parameter, default True,
 				will bring the class into simulation mode if an error arises on startup
 								Simulation mode will mimic all values set as if there were a motor present, therefore,
 								code can be tested without being connected to hardware
@@ -46,8 +45,7 @@ class MoteusController:
 
 		self.ids = ids
 		self.exitFlag = False  # Exit flag will tell the inner loop when to leave, otherwise it does not know
-		self.isReady = None  # This will become true once all the motors are initialized
-		self.simulation = simulation
+		self.isReady = asyncio.Event()  # This will become true once all the motors are initialized
 
 		self.raw_ids = []  # Go through the array and get all the ids in order to make it easier to deal with.
 		for bus in self.ids:
@@ -62,8 +60,8 @@ class MoteusController:
 		self.moteus_task = None
 
 	@classmethod
-	async def create(cls, ids=[[], [], [], [], []], simulation=True):
-		self = MoteusController(ids, simulation)
+	async def create(cls, ids=[[], [], [], [], []]):
+		self = MoteusController(ids)
 		if MoteusCanError.has_duplicates(self.raw_ids):
 			self.mainResults.append(await MoteusCanError.create(self.raw_ids, self.ids))
 		elif len(self.ids) > 5:
@@ -113,100 +111,13 @@ class MoteusController:
 
 			await transport.cycle([x.make_stop() for x in servos.values()])
 
-	async def on_open(self, transport=None, servos=None):  # Starts on open
-		if transport is not None and servos is not None:
-			results = await transport.cycle([x.make_stop(query=True) for x in servos.values()])
-			self.mprint([x.make_stop(query=True) for x in servos.values()])
-			results = self.get_parsed_results_custom(results)
-
-			try:
-				await transport.cycle([
-					x.make_position(
-						position=results[i]["POSITION"],
-						velocity=results[i]["VELOCITY"],
-						maximum_torque=results[i]["TORQUE"]
-					) for i, x in enumerate(servos.values())
-				])
-			except IndexError:
-				self.raise_error(await MoteusCanError.create(self.raw_ids, self.ids))  # This error corresponds to
-
-			await transport.cycle([x.make_rezero(query=True) for x in servos.values()])
-
+	@abc.abstractmethod
 	async def main(self):
-		self.mprint("in main")
-		servo_bus_map = {}  # Servo bus map is for the pi3hat router in order to know which motors are on which CAN bus
-		for i in range(len(self.ids)):  # Go through all of CAN buses
-			bus_ids = []
-			for bus_id in self.ids[i]:  # Go through all the IDs in the particular bus
-				bus_ids.append(bus_id)
-			servo_bus_map[i + 1] = bus_ids  # Set the bus dictionary index to the ids
+		pass
 
-		try:
-			transport = moteus_pi3hat.Pi3HatRouter(  # Create a router using the servo bus map
-				servo_bus_map=servo_bus_map
-			)
-		except RuntimeError:
-			self.raise_error(MoteusPermissionsError())  # Raise more descriptive error than what python can describe
-			return
-
-		servos = {}  # Go through all the motors and create the moteus.Controller objects associated with them
-		for raw_id in self.raw_ids:
-			servos[raw_id] = moteus.Controller(id=raw_id, transport=transport)
-
-		await self.on_open(transport, servos)  # Call the onOpen function above.
-
-		# Set the rawIDs so they can be used later for reference. Using local variables where possible saves a sliver of time
-		raw_ids = self.raw_ids
-
-		self.isReady.set()  # Set ready to true so the class can be implemented elsewhere
-
-		while not self.exitFlag:  # Loop while the exit method was not called
-			# print("looping")
-			# Set all of the states to the class variables, and use the lock to avoid issues
-			commands = [  # Create an array of moteus commands for each motor
-				servos[raw_id].make_position(
-					position=self.motor_states[raw_id]["position"],
-					velocity=self.motor_states[raw_id]["velocity"],
-					maximum_torque=self.motor_states[raw_id]["torque"],
-					query=True) for raw_id in raw_ids
-			]
-
-			# Set the results and wait until they are free to write.
-			self.results = await transport.cycle(commands)  # Cycle through the commands made earlier
-
-			await asyncio.sleep(0.02)  # Minimum sleep time in order to make this method thread safe
-
-		await self.on_close(transport, servos)  # Call onClose after the exitFlag is called
-
+	@abc.abstractmethod
 	async def run(self):
-		self.isReady = asyncio.Event()
-		if len(self.mainResults) == 0:
-			self.moteus_task = asyncio.create_task(self.main())
-			await self.isReady.wait()  # Wait until the motors are initialized, blocking
-
-		if len(self.mainResults) != 0:
-			if not self.simulation:  # If it is not in simulation mode, it prints the first error
-				raise self.mainResults[0]
-			'''
-			else:  # This is to enter simulation mode
-				self.exitFlag = False  # Reset all of the variables
-				self.isReady = False
-				self.mainResults = []
-
-				# Create a warning and set the simulation prefix for all prints from now on, to make sure user is aware
-				warnings.warn('',
-							  MoteusWarning)
-				# global print
-				self.mprint = MoteusWarning.getSimulationPrintFunction()
-
-				sleep(2)  # Added sleep so the user is aware of the warning since it is easy to miss
-
-				self.sim_thread = Thread(target=self.__simulation_main,
-										 args=())  # Create a new thread for the moteus async environment
-				self.sim_thread.start()  # Start the thread
-
-				self.wait_until_ready()  # Wait until the sim is initialized, blocking
-			'''
+		pass
 
 	def set_attributes(self, can_id, pos=math.nan, velocity=math.nan, torque=math.nan):
 		""" Set attributes function is used to set the position, velocity and torque of a specific motor.
@@ -363,16 +274,6 @@ class MoteusController:
 			@return True if the motors are ready and initialized, false if they are not
 		"""
 		return self.isReady.is_set()
-
-	async def wait_until_ready(self):
-		"""
-		This is a blocking function that waits until the motors are fully initialized without errors. It will block
-		the main Thread (aka, where this method was called)
-
-		Returns if and only if the motors were deemed ready or there is an error. Eventually, a timeout needs to be
-		implemented
-		"""
-		await self.isReady.wait()
 
 	# Wait until it is ready or there is an error
 

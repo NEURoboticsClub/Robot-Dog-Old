@@ -12,6 +12,7 @@ import socket
 
 from get_cpu_command import get_cpu_command
 from moteus_controller import MoteusController
+from pi.mc.motor_controller import MotorController
 from send_mc_states import send_mc_states
 
 # Get local machine name
@@ -20,7 +21,7 @@ CPU_SUB_SERVER_PORT = 9999
 MC_SUB_SERVER_PORT = 9998
 
 
-async def main(_m: MoteusController):
+async def main(m: MoteusController):
 	# to = 3                      #0.1 seems to be the lower limit for a standalone motor. This is max torque.
 	# vel = 1
 
@@ -40,28 +41,28 @@ async def main(_m: MoteusController):
 	mc_sub_socket.connect((SERVER_HOST, MC_SUB_SERVER_PORT))
 
 	# 3. init thread
-	controller_task = asyncio.create_task(_m.run())
-	cpu_task = asyncio.create_task(get_cpu_command(cpu_sub_socket, _m))
-	mc_task = asyncio.create_task(send_mc_states(_m, mc_sub_socket))
+	controller_task = asyncio.create_task(m.run())
+	cpu_task = asyncio.create_task(get_cpu_command(cpu_sub_socket, m))
+	mc_task = asyncio.create_task(send_mc_states(m, mc_sub_socket))
 
 	# # 4. run
 
 	await asyncio.gather(controller_task, cpu_task, mc_task)
 
-	_m.mprint(_m.get_parsed_results())
+	m.mprint(m.get_parsed_results())
 
 
-async def close_key(_m):
-	await _m.close_moteus()
-	_m.mprint("Moteus Closed Properly")
+async def close_key(m):
+	await m.close_moteus()
+	m.mprint("Moteus Closed Properly")
 
 
 if __name__ == '__main__':
-	m = asyncio.run(MoteusController.create(ids=[[], [], [2], [], []], simulation=False))
+	controller = asyncio.run(MotorController.create(ids=[[], [], [2], [], []]))
 	try:
-		asyncio.run(main(m))
+		asyncio.run(main(controller))
 	except KeyboardInterrupt:
-		asyncio.run(close_key(m))
+		asyncio.run(close_key(controller))
 		sys.exit(0)
 
 # to add:
