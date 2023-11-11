@@ -1,8 +1,0 @@
-prefix=/home/dartis/NU-Dog/ros_ws/devel
-
-Name: nuDogv6_2_config
-Description: Description of nuDogv6_2_config
-Version: 0.1.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
