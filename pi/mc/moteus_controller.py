@@ -61,7 +61,9 @@ class MoteusController(abc.ABC):
 
 	@classmethod
 	async def create(cls, ids=[[], [], [], [], []]):
-		self = MoteusController(ids)
+		if cls is MoteusController:
+			raise TypeError("create() must be called on a subclass")
+		self = cls(ids)
 		if MoteusCanError.has_duplicates(self.raw_ids):
 			self.mainResults.append(await MoteusCanError.create(self.raw_ids, self.ids))
 		elif len(self.ids) > 5:

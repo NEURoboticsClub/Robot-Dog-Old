@@ -3,7 +3,7 @@ import asyncio
 import moteus
 import moteus_pi3hat
 from moteus_controller import MoteusController
-from pi.mc.MoteusException import MoteusPermissionsError, MoteusCanError
+from MoteusException import MoteusPermissionsError, MoteusCanError
 
 
 class MotorController(MoteusController):

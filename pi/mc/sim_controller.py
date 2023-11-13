@@ -3,7 +3,7 @@ import warnings
 from moteus_controller import MoteusController
 import asyncio
 
-from pi.mc.MoteusException import MoteusWarning
+from MoteusException import MoteusWarning
 
 
 class SimResults:

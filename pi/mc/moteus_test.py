@@ -4,15 +4,14 @@ Documentation for this module
 More details
 """
 
-from MoteusException import *
+import asyncio
 
 # for bridge nodes sockets
 import sys
 import socket
 
 from get_cpu_command import get_cpu_command
-from moteus_controller import MoteusController
-from pi.mc.motor_controller import MotorController
+from motor_controller import MotorController
 from send_mc_states import send_mc_states
 
 # Get local machine name
@@ -21,7 +20,12 @@ CPU_SUB_SERVER_PORT = 9999
 MC_SUB_SERVER_PORT = 9998
 
 
-async def main(m: MoteusController):
+async def close_key(m):
+	await m.close_moteus()
+	m.mprint("Moteus Closed Properly")
+
+
+async def main(controller: MotorController):
 	# to = 3                      #0.1 seems to be the lower limit for a standalone motor. This is max torque.
 	# vel = 1
 
@@ -41,29 +45,28 @@ async def main(m: MoteusController):
 	mc_sub_socket.connect((SERVER_HOST, MC_SUB_SERVER_PORT))
 
 	# 3. init thread
-	controller_task = asyncio.create_task(m.run())
-	cpu_task = asyncio.create_task(get_cpu_command(cpu_sub_socket, m))
-	mc_task = asyncio.create_task(send_mc_states(m, mc_sub_socket))
+	controller_task = asyncio.create_task(controller.run())
+	cpu_task = asyncio.create_task(get_cpu_command(cpu_sub_socket, controller))
+	mc_task = asyncio.create_task(send_mc_states(controller, mc_sub_socket))
 
 	# # 4. run
 
-	await asyncio.gather(controller_task, cpu_task, mc_task)
+	try:
+		await asyncio.gather(controller_task, cpu_task, mc_task)
+	except KeyboardInterrupt:
+		await close_key(controller)
+		return
 
-	m.mprint(m.get_parsed_results())
-
-
-async def close_key(m):
-	await m.close_moteus()
-	m.mprint("Moteus Closed Properly")
+	controller.mprint(controller.get_parsed_results())
 
 
 if __name__ == '__main__':
-	controller = asyncio.run(MotorController.create(ids=[[], [], [2], [], []]))
+	loop = asyncio.get_event_loop()
+	m = loop.run_until_complete(MotorController.create(ids=[[], [], [2], [], []]))
 	try:
-		asyncio.run(main(controller))
+		loop.run_until_complete(main(m))
 	except KeyboardInterrupt:
-		asyncio.run(close_key(controller))
-		sys.exit(0)
+		loop.run_until_complete(close_key(m))
 
 # to add:
 # flux braking- moteus defaults to discharging voltage when braking to DC power bus
