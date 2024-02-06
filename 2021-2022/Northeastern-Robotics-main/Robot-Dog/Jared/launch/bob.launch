@@ -1,3 +1,0 @@
-<launch>
-    <node pkg="Jared" type="moteus_listener.py" name="bob" launch-prefix="sudo -E"/>
-</launch>
